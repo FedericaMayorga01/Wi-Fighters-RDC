@@ -1,4 +1,4 @@
-# Trabajo Práctico N°1 - Parte I - Conguración y Análisis de tráfico IPv4/IPv6
+# Trabajo Práctico N°1 - Parte I - Configuración y Análisis de tráfico IPv4/IPv6
 
 **Nombres**  
 _Elly I Esparza;_  
@@ -80,23 +80,34 @@ Los resultados obtenidos fueron que la conectividad en la red IPv6 se encuentra 
     <em>Figura 4: Simulación del trafico ICMP.</em>
 </p>
 
-  1) HACER ¿Cuáles son las comunicaciones ARP que observan? observan? Explicar y ejemplicar con capturas cómo funciona la traducción de direcciones lógicas a direcciones físicas.
+  1) Pero, antes de iniciar la comunicación ICMP los dispositivos deber realizar una conversión entre direcciones lógicas (IPv4) y direcciones físicas (MAC) que les permitan transmitir los mensajes a los dispositivos correctos dentro de su propia red. Para ello se utiliza el protocolo ARP.
+
+<p align="center">
+    <img src="./img/TPN1_traficoARP.png"><br>
+    <em>Figura 5: Simulación del trafico ARP.</em>
+</p>
+ 
+El primer mensaje de este tipo lo realiza el host h1 que busca encontrar la dirección MAC de su deafult gateway (router) ya que la dirección IP con la que intenta comunicarse esta fuera de su propia red.
 
   <p align="center">
       <img src="./img/TPN1_traficoICMPlogicasfisicasInbound.jpg"><br>
-      <em>Figura 4: PDU Information Inbound.</em>
+      <em>Figura 5a: PDU Information Inbound.</em>
   </p>
+
+El router responde este mensaje con su dirección MAC permitiéndole al host conocer la dirección MAC de su default gateway.
 
   <p align="center">
       <img src="./img/TPN1_traficoICMPlogicasfisicasOutbound.jpg"><br>
-      <em>Figura 5: PDU Information Outbound.</em>
+      <em>Figura 5b: PDU Information Outbound.</em>
    </p>
 
-  2) HACER ¿Cuáles son las direcciones IP en los datagramas? Indicar con un ejemplo.
+Cuando llega la solicitud ICMP al router este repite el proceso para obtener la dirección MAC del host de destino, donde el switch retransmite el mensaje ARP a ambos hosts (2 y 3) pero solo el que tiene la dirección IP correcta responde.
 
-  3) HACER ¿Cómo determina el enrutador la comunicación entre un host y otro?
+  2) Si revisamos nuevamente las figuras 5a y 5b queda claro como en los mensajes ARP las direcciones IPs se dividen en IP de origen y destino, donde la de origen se almacena en el bit 112 del encabezado ARP y la de destino en el bit 192.
 
-  4) HACER ¿Para qué usamos el switch? ¿Por qué el switch no tiene asignadas direcciones IP en sus interfaces?
+  3) Una vez el host 1 sabe que puerto lo conecta al router transmite el paquete ICMP, y el router repite el proceso ARP para obtener la MAC del destino. Basándose en la sub-red de destino el router sabe que debe consultar por su puerto que pertenece a dicha sub-red.
+
+  4) Por último el switch retransmitirá el mensaje al host de destino adecuado ya que habrá completado internamente una tabla con las direcciones MAC de los dispositivos conectados a cada uno de sus puertos. Cabe aclarar que el switch realiza una tarea de retransmisión, no de enrutamiento como el router, por lo que no necesita que se le asigne una dirección IP en sus puertos (De todas formas esto se puede realizar pero su utilidad es solo de brindar acceso remoto al switch).
 
   5) En la tabla ARP de h1 vemos: la dirección IP, la dirección MAC y el tipo de entrada, en este caso, dinámica.
 
