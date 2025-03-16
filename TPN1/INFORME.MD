@@ -144,14 +144,14 @@ Cuando llega la solicitud ICMP al router este repite el proceso para obtener la 
 
 <p align="center">
       <img src="./img/TPN1_traficoNDP.png"><br>
-      <em>Figura 8: Tráfico NDP/ICMPv6 generado de h1 a h2.</em>
+      <em>Figura 9: Tráfico NDP/ICMPv6 generado de h1 a h2.</em>
   </p>
 
   1) El primer mensaje NDP que ocurre se da desde el host h1 al router, su PDU es la siguiente.
 
 <p align="center">
       <img src="./img/TPN1_solicituddevecino.png"><br>
-      <em>Figura 9: PDU NDP h1 al router.</em>
+      <em>Figura 10: PDU NDP Solicitud de vecino.</em>
   </p>
 
 En la casilla type (primero 8 bits) se encuentra el código 0x87, este código hexadecimal se traduce a 135 decimal, que es el código usado para representar las **solicitudes de vecino**. Específicamente el host está solicitando la dirección física del dispositivo de IP 2001:AAAA:BBBB:1::11 (bits 64-96) que se corresponde a su default gateway.
@@ -160,10 +160,27 @@ Analizando la PDU IPv6 se destaca que la dirección de destino es FF02::1:FFOO:1
 
 <p align="center">
       <img src="./img/TPN1_PDUIPv6.png"><br>
-      <em>Figura 10: PDU IPv6 Solicitud de vecino.</em>
+      <em>Figura 11: PDU IPv6 multicast.</em>
   </p>
 
-El router responde a la solicitud con un anuncio de vecino (type 0x88)
+El router responde a la solicitud con un anuncio de vecino (type 0x88) indicando su dirección MAC. Este mensaje se envía como un unicast IPv6 al mismo host que hizo la solicitud.
+
+<p align="center">
+      <img src="./img/TPN1_anunciodevecino.png"><br>
+      <em>Figura 12: PDU NDP Anuncio de vecino.</em>
+  </p>
+
+Luego, cuando el mensaje ICMPv6 llega al router este repite el procedimiento para encontrar al host 3. Cuando la solicitud multicast llega al host 2 este la descarta automáticamente por no pertenecer al grupo multicast.
+
+  2) NDP es el protocolo que reemplaza a ARP en redes IPv6. Este presenta además mejoras de rendimiento al usar multicast en lugar de broadcast reduciendo el tráfico en la red.
+
+  3) HACER: Describir las funciones de NDP
+
+  4) HACER: ¿Cómo se reemplaza la función de broadcast en IPv6?
+
+  5) HACER: ¿Cuál es la diferencia entre las direcciones link-local, unique-local y global? ¿En qué caso usaría
+cada una? Ejemplificar.
+
 
 ---
 
