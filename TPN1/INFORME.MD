@@ -140,9 +140,30 @@ Cuando llega la solicitud ICMP al router este repite el proceso para obtener la 
   9) En IPv4, la multidifusión o multicast es un método de transmisión que permite enviar información a un grupo específico de receptores configurados para recibirla. En lugar de enviar múltiples copias individuales, el emisor transmite los datos una sola vez a una dirección de multicast, y la red se encarga de distribuirlos eficientemente a todos los destinatarios dentro del grupo.
   Este tipo de tráfico es especialmente útil para la distribución masiva de datos, permitiendo que un único flujo llegue simultáneamente a múltiples dispositivos. Se emplea comúnmente en aplicaciones de transmisión multimedia, como streaming de video y música, así como en videoconferencias y en la distribución de configuraciones o actualizaciones a varios dispositivos dentro de una red local.
 
-**7)** HACER Iniciar tráfico ICMPv3 (IPv6) entre h1 y h3. Analizar el tráfico sobre las dos redes, capturar screenshots y responder las siguientes preguntas:
+**7)** A continuación iniciamos tráfico ICMPv6 (ping IPv6) entre h1 a h3.
 
+<p align="center">
+      <img src="./img/TPN1_traficoNDP.png"><br>
+      <em>Figura 8: Tráfico NDP/ICMPv6 generado de h1 a h2.</em>
+  </p>
 
+  1) El primer mensaje NDP que ocurre se da desde el host h1 al router, su PDU es la siguiente.
+
+<p align="center">
+      <img src="./img/TPN1_solicituddevecino.png"><br>
+      <em>Figura 9: PDU NDP h1 al router.</em>
+  </p>
+
+En la casilla type (primero 8 bits) se encuentra el código 0x87, este código hexadecimal se traduce a 135 decimal, que es el código usado para representar las **solicitudes de vecino**. Específicamente el host está solicitando la dirección física del dispositivo de IP 2001:AAAA:BBBB:1::11 (bits 64-96) que se corresponde a su default gateway.
+
+Analizando la PDU IPv6 se destaca que la dirección de destino es FF02::1:FFOO:11, esto es una dirección multicast donde los dígitos 00:11 al final indican los últimos 24 bits de la IPv6 que se está buscando, así se reduce el procesamiento que los hosts deben realizar del paquete (aquellos cuya IP no coincida con esos 24 bits descartan el paquete inmediatamente).
+
+<p align="center">
+      <img src="./img/TPN1_PDUIPv6.png"><br>
+      <em>Figura 10: PDU IPv6 Solicitud de vecino.</em>
+  </p>
+
+El router responde a la solicitud con un anuncio de vecino (type 0x88)
 
 ---
 
