@@ -174,13 +174,19 @@ Luego, cuando el mensaje ICMPv6 llega al router este repite el procedimiento par
 
   2) NDP es el protocolo que reemplaza a ARP en redes IPv6. Este presenta además mejoras de rendimiento al usar multicast en lugar de broadcast reduciendo el tráfico en la red.
 
-  3) HACER: Describir las funciones de NDP
+  3) El protocolo NDP cuenta con las siguientes funciones principales
+     - Descubrimiento de vecinos: Permite a un host identificar la MAC de otro nodo en la misma red mediante el intercambio de mensajes (Neighbor Solicitation y Neighbor Advertisement)
+     - Descubrimiento de routers: Los hosts pueden detectar la presencia de routers locales a través de mensajes Router Solicitation (iniciado por el host) y Router Advertisement (emitido por los routers). 
+     - Autoconfiguracion sin estado (SLAAC): Permite que un host configure su dirección IPv6 de forma automática sin necesidad de un servidor DHCP, basándose en la información recibida en los mensajes de Router Advertisement.
+     - Detección de duplicados (DAD): Antes de asignar una dirección, el host verifica que ésta no esté ya en uso en el enlace, evitando conflicto de direcciones.
+     - Redirección: Los routers pueden informar a los hosts sobre rutas más óptimas para llegar a ciertos destinos a través de mensajes de redirección
 
-  4) HACER: ¿Cómo se reemplaza la función de broadcast en IPv6?
+  4) La funcion de broadcast en IPv6, es reemplazada por el **Multicast**
 
-  5) HACER: ¿Cuál es la diferencia entre las direcciones link-local, unique-local y global? ¿En qué caso usaría
-cada una? Ejemplificar.
-
+  5) La principal diferencia entre `Link-local`, `Unique-local` y `Global` esta en su uso específico.
+     - Link-local: Se usa para la comunicación en el mismo enlace. Estas direcciones se configuran de forma auttomática (usando el prefijo fe80::/10) y no se enrutan fuera del enlace local. _Ejemplo de uso:_ Se utiliza esencialmente para la ejecución de NDP, autoconfiguracion y otras operaciones básicas como el descubrumiento de vecinos en la red local.
+     - Unique-local: Son similares a las direcciones privadas en IPv4. Se utilizan en redes internas o en entornos de múltiples sitios, pero no son enrutables en internet. Generalmente utilizan el prefijo fd00::/8. _Ejemplo de uso:_ En una empresa, se puede utilizar para la comunicación interna entre servidores y estaciones de trabajo sin exponer estas comunicaciones a la red pública.
+     - Global: Son direcciones únicas y enrutables a nivel mundial, asignadas por IANA y distribuidas por los registrios regionales de internet. Estas direcciones pertenecen al rango 2000::/3. _Ejemplo de uso:_ Se utilizan cuando un dispositivo debe comunicarse a través de internet, garantizando una direccion única y accesible globalmente.
 
 ---
 
