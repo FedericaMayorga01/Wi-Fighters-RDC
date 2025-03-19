@@ -211,14 +211,21 @@ El objetivo de este trabajo es el manejo de equipamiento físico de red, incluye
 
 ## Consignas
 
-1) HACER Utilizando internet y el datasheet [1] del switch Cisco, documentar las características principales del mismo.
-2) HACER Elaborar checklists (manuales, indicaciones) de procedimientos para las siguientes actividades:
+**1)** El **Cisco Catalyst 2950** es un switch gestionado de 10/100 Mbps, diseñado para redes pequeñas y medianas. Algunas de sus principales características son:
+  - **Puertos:** Modelos con 12, 24 o 48 puertos Fast Ethernet (10/100 Mbps), algunos con puertos Gigabit Ethernet adicionales.
+  - **Administración:** Soporta administración web (Cisco Device Manager), CLI y Simple Network Management Protocol (SNMP) para gestión remota.
+  - **Seguridad:** Implementa autenticación 802.1x, seguridad basada en direcciones MAC y protocolos de gestión segura como Secure Shell (SSHv2) y SNMPv3.
+  - **Rendimiento:** Arquitectura de conmutación de hasta 13.6 Gbps, con capacidad de reenvío a velocidad de línea.
+  - **Funciones avanzadas:** VLANs, Quality of Service (QoS), Spanning Tree Protocol (STP), mirroring de puertos (SPAN) y soporte para multicast (IGMP snooping).
+  - **Administración de energía:** Compatible con Cisco RPS (Redundant Power System) para respaldo de energía.
+  
+1) HACER Elaborar checklists (manuales, indicaciones) de procedimientos para las siguientes actividades:
   a) Conectar una PC al puerto de consola del switch Cisco a 9600 baudios utilizando PUTTY.
   b) Acceder a las opciones de administración del switch y modicar claves de acceso.
   c) Conectar dos computadoras al switch, configurar una red y testear conectividad.
   d) Configurar un puerto del switch en modo mirroring y monitorear, con una tercera computadora, el tráfico entre las dos computadoras conectadas en el procedimiento c) mientras se testea la conectividad entre ellas.
 
-3) HACER Llevar a cabo las actividades 3.a 3.b, 3.c y 3.d de la parte 1 y documentar los resultados.
+1) HACER Llevar a cabo las actividades 3.a 3.b, 3.c y 3.d de la parte 1 y documentar los resultados.
 
 
 ## Resultados
