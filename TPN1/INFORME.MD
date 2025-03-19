@@ -1,4 +1,5 @@
-# Trabajo Práctico N°1 - Parte I - Configuración y Análisis de tráfico IPv4/IPv6
+# Trabajo Práctico N°1
+# Parte I - Configuración y Análisis de tráfico IPv4/IPv6
 
 **Nombres**  
 _Elly I Esparza;_  
@@ -190,6 +191,36 @@ Luego, cuando el mensaje ICMPv6 llega al router este repite el procedimiento par
 
 ---
 
+# Parte II - Manejo de equipamiento físico, recuperación de contraseñas de equipos de red y establecimiento de red y análisis de tráfico.
+
+## Resumen
+
+En esta segunda parte del trabajo práctico N°1, el objetivo es configurar y administrar un switch Cisco Catalyst 2950 [1]. Establecer conexión mediante PUTTY, modificando claves de acceso y realizar pruebas de conectividad. Además, se analizará el tráfico de red, evaluando protocolos como ARP, NDP e ICMP, y configurando DHCP y mirroring de puertos para monitoreo.
+
+**Palabras clave**: _Switch Cisco Catalyst 2950, administración, contraseñas, ARP, NDP, ICMP, DHCP, configuración de red, análisis de tráfico, mirroring de puertos_
+
+---
+
+## Introducción
+
+El objetivo de este trabajo es el manejo de equipamiento físico de red, incluyendo la configuración y administración de un switch empresarial. A lo largo de las actividades, se busca desarrollar habilidades en la conexión y configuración de dispositivos, recuperación de claves de acceso, establecimiento de redes y análisis de tráfico. Se emplearán herramientas como PUTTY y hardware específico para realizar pruebas de conectividad y monitoreo de tráfico.
+
+---
+
+# Metodología
+
+## Consignas
+
+1) HACER Utilizando internet y el datasheet [1] del switch Cisco, documentar las características principales del mismo.
+2) HACER Elaborar checklists (manuales, indicaciones) de procedimientos para las siguientes actividades:
+  a) Conectar una PC al puerto de consola del switch Cisco a 9600 baudios utilizando PUTTY.
+  b) Acceder a las opciones de administración del switch y modicar claves de acceso.
+  c) Conectar dos computadoras al switch, configurar una red y testear conectividad.
+  d) Configurar un puerto del switch en modo mirroring y monitorear, con una tercera computadora, el tráfico entre las dos computadoras conectadas en el procedimiento c) mientras se testea la conectividad entre ellas.
+
+3) HACER Llevar a cabo las actividades 3.a 3.b, 3.c y 3.d de la parte 1 y documentar los resultados.
+
+
 ## Resultados
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor, mauris sit amet aliquet vestibulum, enim ante consectetur enim, vel sollicitudin odio risus vel libero. Integer eget ipsum sed eros luctus laoreet vel vel leo. Fusce ut dapibus nisl. Aliquam erat volutpat. Donec in elit non justo convallis vestibulum.
@@ -202,8 +233,4 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor, mauris sit 
 
 ## Referencias
 
-[1] Consultar [Normas APA](https://normas-apa.org/referencias/)
-
-[2] ...
-
-[3] ...
+[1] CISCO CATALYST 2950 SERIES SWITCHES WITH STANDARD IMAGE SOFTWARE [Cisco Systems](https://teamkci.com/wp-content/uploads/WS-C2950.pdf)
