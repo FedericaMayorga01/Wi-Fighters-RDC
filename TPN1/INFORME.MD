@@ -218,14 +218,51 @@ El objetivo de este trabajo es el manejo de equipamiento físico de red, incluye
   - **Rendimiento:** Arquitectura de conmutación de hasta 13.6 Gbps, con capacidad de reenvío a velocidad de línea.
   - **Funciones avanzadas:** VLANs, Quality of Service (QoS), Spanning Tree Protocol (STP), mirroring de puertos (SPAN) y soporte para multicast (IGMP snooping).
   - **Administración de energía:** Compatible con Cisco RPS (Redundant Power System) para respaldo de energía.
-  
-1) HACER Elaborar checklists (manuales, indicaciones) de procedimientos para las siguientes actividades:
-  a) Conectar una PC al puerto de consola del switch Cisco a 9600 baudios utilizando PUTTY.
-  b) Acceder a las opciones de administración del switch y modicar claves de acceso.
-  c) Conectar dos computadoras al switch, configurar una red y testear conectividad.
-  d) Configurar un puerto del switch en modo mirroring y monitorear, con una tercera computadora, el tráfico entre las dos computadoras conectadas en el procedimiento c) mientras se testea la conectividad entre ellas.
 
-1) HACER Llevar a cabo las actividades 3.a 3.b, 3.c y 3.d de la parte 1 y documentar los resultados.
+**2)** Estos son los procedimientos sugeridos:
+   - **Para el paso a):**
+   - Reunir el material necesario (cable de consola RJ-45, usb a RS-232 y PuTTY instalado).
+   - Conectar el cable de consola al puerto CONSOLE del switch, y el otro extremo a la PC.
+   - Verificar el puerto COM asignado, abriendo el administrador de dispositivos y buscando en Puertos el puerto asignado (ej: COM3).
+   - Abrir PuTTY y en la seccion de Connection type seleccionar Serial. En Serial line escribir el numero del puerto COM asignado y en Speed (baud rate) escribir 9600. Configurar los parametros de 
+     - Baud rate: 9600, 
+     - Data bits: 8, 
+     - Parity: None, 
+     - Stop bits: 1, 
+     - Flow control: None 
+     - Y hacer clic en Open.
+   - Verificar la conexion, si la pantalla esta en negro, presionar Enter; y si aparecen caracteres extraños, cerrar PuTTY y verificar la configuracion.
+   - **Para el paso b):**
+   - Acceder al switch por consola en PuTTY, apretando Enter accedemos al CLI.
+   - Escribir el comando ``enable`` para entrar en modo privilegiado.
+   - Escribir el comando ``configure terminal`` para entrar en modo de configuracion global (el prompt deberia verse como ``Switch(config)#``).
+   - Escribir el comando ``enable secret CLAVE_NUEVA`` para configurar la clave de acceso al modo privilegiado.
+   - Escribir el comando ``line console 0`` para acceder a la linea de consola y luego asi configurar la clave de acceso a la consola, entonces ingresar el comando ``password CLAVE_CONSOLA``.
+   - Habilitar el inicio de sesion con clave con el comando `login`.
+   - Para salir al modo global, usar el comando `exit`.
+   - Para guardar los cambios en la configuracion, escribir el comando `write memory` y salir al modo usuario con el comando `exit`.
+   - **Para el paso c):**
+   - Reunir el material necesario (cable de consola RJ-45, cables Ethernet).
+   - Conectar las PCs al switch con los cables Ethernet y verificar que las luces de los puertos del switch se enciendan.
+   - Configurar direcciones IP en las PCs:
+     - PC1 IP: 192.168.1.10
+     - PC1 Mascara: 255.255.255.0
+     - PC2 IP: 192.168.1.11
+     - PC2 Mascara: 255.255.255.0
+   - Opcional: Crear una VLAN en el switch. Escribir el comando ``configure terminal`` para entrar en modo de configuracion global y crear una VLAN con los comandos ``vlan 10`` seguido de `exit`. Asignar los puertos de las PCs a VLAN10 con los comandos `interface fastEthernet 0/1`, `switchport mode access`, `switchport access vlan 10` y `exit` (cambiar 0/1 por 0/2 para la otra PC). Finalmente `write memory`.
+   - Probar la conectividad. Desde la PC1, escribir el comando `ping 192.168.1.11` y desde la PC2, escribir el comando `ping 192.168.1.10`.
+   - En cada PC, ejecutar el comando `arp -a` para mostrar las direcciones MAC de una PC en la misma red.
+   - **Para el paso d):**
+   - Reunir el material necesario (tres PCs, cables Ethernet y Wireshark).
+   - Configurar morroring en el switch desde la PC conectada a consola. Escribir el comando `configure terminal` para acceder a la configuracion global.
+   - Definir el puerto de origen (de PC1 a PC2) con el comando `monitor session 1 source interface fastEthernet 0/1`.
+   - Definir el puerto de destino (PC3) con el comando `monitor session 1 destination interface fastEthernet 0/3`.
+   - Guardar la configuracion con `write memory`.
+   - Capturar el trafico con Wireshark. En la PC3, abrir Wireshark y seleccionar la interfaz de red conectada al switch. Iniciar la captura y observar los paquetes entre PC1 y PC2.
+   - Hacer uso del comando `ping` entre PC1 y PC2, para verificar en Wireshark que los paquetes aparecen como ICMP.
+- monitor session 1 destination interface fastEthernet 0/3
+
+**3)** HACER Llevar a cabo las actividades 3.a 3.b, 3.c y 3.d de la parte 1 y documentar los resultados.
 
 
 ## Resultados
