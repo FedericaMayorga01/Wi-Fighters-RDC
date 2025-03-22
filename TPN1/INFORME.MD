@@ -250,7 +250,8 @@ El objetivo de este trabajo es el manejo de equipamiento físico de red, incluye
 
 ## Consignas
 
-**1)** El **Cisco Catalyst 2950** es un switch gestionado de 10/100 Mbps, diseñado para redes pequeñas y medianas. Algunas de sus principales características son:
+**1)**  
+El **Cisco Catalyst 2950** es un switch gestionado de 10/100 Mbps, diseñado para redes pequeñas y medianas. Algunas de sus principales características son:
   - **Puertos:** Modelos con 12, 24 o 48 puertos Fast Ethernet (10/100 Mbps), algunos con puertos Gigabit Ethernet adicionales.
   - **Administración:** Soporta administración web (Cisco Device Manager), CLI y Simple Network Management Protocol (SNMP) para gestión remota.
   - **Seguridad:** Implementa autenticación 802.1x, seguridad basada en direcciones MAC y protocolos de gestión segura como Secure Shell (SSHv2) y SNMPv3.
@@ -258,7 +259,8 @@ El objetivo de este trabajo es el manejo de equipamiento físico de red, incluye
   - **Funciones avanzadas:** VLANs, Quality of Service (QoS), Spanning Tree Protocol (STP), mirroring de puertos (SPAN) y soporte para multicast (IGMP snooping).
   - **Administración de energía:** Compatible con Cisco RPS (Redundant Power System) para respaldo de energía.
 
-**2)** Estos son los procedimientos sugeridos:
+**2)**  
+Estos son los procedimientos sugeridos:
    - **Para el paso a):**
    - Reunir el material necesario (cable de consola RJ-45, usb a RS-232 y PuTTY instalado).
    - Conectar el cable de consola al puerto CONSOLE del switch, y el otro extremo a la PC.
@@ -271,6 +273,12 @@ El objetivo de este trabajo es el manejo de equipamiento físico de red, incluye
      - Flow control: None 
      - Y hacer clic en Open.
    - Verificar la conexion, si la pantalla esta en negro, presionar Enter; y si aparecen caracteres extraños, cerrar PuTTY y verificar la configuracion.
+
+      <p align="center">
+        <img src="./img/TPN1_IPPC1.jpg"><br>
+        <em>Figura 13: Configuracion de PC1.</em>
+      </p>
+
    - **Para el paso b):**
    - Acceder al switch por consola en PuTTY, apretando Enter accedemos al CLI.
    - Escribir el comando ``enable`` para entrar en modo privilegiado.
@@ -280,6 +288,12 @@ El objetivo de este trabajo es el manejo de equipamiento físico de red, incluye
    - Habilitar el inicio de sesion con clave con el comando `login`.
    - Para salir al modo global, usar el comando `exit`.
    - Para guardar los cambios en la configuracion, escribir el comando `write memory` y salir al modo usuario con el comando `exit`.
+
+      <p align="center">
+        <img src="./img/TPN1_switchContraseña.jpg"><br>
+        <em>Figura 14: Configuracion del switch.</em>
+      </p>
+
    - **Para el paso c):**
    - Reunir el material necesario (cable de consola RJ-45, cables Ethernet).
    - Conectar las PCs al switch con los cables Ethernet y verificar que las luces de los puertos del switch se enciendan.
@@ -290,18 +304,70 @@ El objetivo de este trabajo es el manejo de equipamiento físico de red, incluye
      - PC2 Mascara: 255.255.255.0
    - Opcional: Crear una VLAN en el switch. Escribir el comando ``configure terminal`` para entrar en modo de configuracion global y crear una VLAN con los comandos ``vlan 10`` seguido de `exit`. Asignar los puertos de las PCs a VLAN10 con los comandos `interface fastEthernet 0/1`, `switchport mode access`, `switchport access vlan 10` y `exit` (cambiar 0/1 por 0/2 para la otra PC). Finalmente `write memory`.
    - Probar la conectividad. Desde la PC1, escribir el comando `ping 192.168.1.11` y desde la PC2, escribir el comando `ping 192.168.1.10`.
+
+      <p align="center">
+        <img src="./img/TPN1_PC1pingPC2.jpg"><br>
+        <em>Figura 15: PC1 ping PC2.</em>
+      </p>
+
    - En cada PC, ejecutar el comando `arp -a` para mostrar las direcciones MAC de una PC en la misma red.
+      
+      <p align="center">
+        <img src="./img/TPN1_PC1tablaARP.jpg"><br>
+        <em>Figura 16: Tabla ARP en PC1.</em>
+      </p>
+
    - **Para el paso d):**
    - Reunir el material necesario (tres PCs, cables Ethernet y Wireshark).
    - Configurar morroring en el switch desde la PC conectada a consola. Escribir el comando `configure terminal` para acceder a la configuracion global.
    - Definir el puerto de origen (de PC1 a PC2) con el comando `monitor session 1 source interface fastEthernet 0/1`.
    - Definir el puerto de destino (PC3) con el comando `monitor session 1 destination interface fastEthernet 0/3`.
    - Guardar la configuracion con `write memory`.
+
+      <p align="center">
+        <img src="./img/TPN1_SPAN.jpg"><br>
+        <em>Figura 17: SPAN en switch.</em>
+      </p>
+
    - Capturar el trafico con Wireshark. En la PC3, abrir Wireshark y seleccionar la interfaz de red conectada al switch. Iniciar la captura y observar los paquetes entre PC1 y PC2.
    - Hacer uso del comando `ping` entre PC1 y PC2, para verificar en Wireshark que los paquetes aparecen como ICMP.
-- monitor session 1 destination interface fastEthernet 0/3
 
-**3)** HACER Llevar a cabo las actividades 3.a 3.b, 3.c y 3.d de la parte 1 y documentar los resultados.
+      <p align="center">
+        <img src="./img/TPN1_WireSharkICMP.jpg"><br>
+        <em>Figura 18: Ping en WireShark.</em>
+      </p>
+
+      <p align="center">
+        <img src="./img/TPN1_WireSharkICMP(mas).jpg"><br>
+        <em>Figura 19: Ping en WireShark.</em>
+      </p>
+
+**3)**  
+Replicando los pasos realizados en las actividades 6.1, 6.2, 6.3 y 6.4 en la Parte 1 del TPN1, obtenemos los siguientes resultados.  
+Las comunicaciones ARP observadas a través de WireShark fueron:
+
+  <p align="center">
+    <img src="./img/TPN1_WireSharkARP.jpg"><br>
+    <em>Figura 20: Ping en WireShark.</em>
+  </p>
+
+Las direcciones IP en los datagramas observados fueron:
+
+  <p align="center">
+    <img src="./img/TPN1_WireSharkPC2aPC1conTCP.jpg"><br>
+    <em>Figura 21: ???.</em>
+  </p>
+
+  <p align="center">
+    <img src="./img/TPN1_WireSharkPC2aPC1conTCPRecepcion.jpg"><br>
+    <em>Figura 22: ???.</em>
+  </p>
+
+  <p align="center">
+    <img src="./img/TPN1_WireSharkPC2aPC1conTCPConfirmacion.jpg"><br>
+    <em>Figura 23: ???.</em>
+  </p>
+
 
 
 ## Resultados
