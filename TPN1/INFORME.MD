@@ -28,7 +28,7 @@ Santiago M Henn
 
 En esta primera parte del Trabajo Práctico N°1, el objetivo es configurar un esquema de red dual stack, utilizando tanto IPv4 como IPv6, en un entorno simulado o emulado. Se analizará el tráfico de red y el comportamiento de protocolos clave como ARP, NDP e ICMP, además de implementar la asignación dinámica de direcciones mediante DHCP.  
 
-**Palabras clave**: _Redes, IPv4, IPv6, ARP, NDP, ICMP, ping, DHCP, switch, router_
+**Palabras clave**: _Interconexion de redes, Internet IPv4, IPv6, ARP, NDP, ICMP, ping, DHCP, Switch, Router_
 
 ---
 
@@ -42,9 +42,43 @@ El objetivo principal es comprender el funcionamiento de estos protocolos en un 
 
 ## Consignas
 
-**1)** HACER Desarrollar un marco teórico resumido, suficiente para fundamentar los procedimientos a realizar.  
+**1)**  
+El manejo de redes requiere conocer los protocolos y procesos fundamentales que permiten la comunicación eficiente entre dispositivos. En esta parte del trabajo práctico, se abordan conceptos esenciales como dispositivos de encaminamiento, segmentación y reensamblado, fragmentación, tiempo de vida del datagrama y análisis de tráfico. Estos conceptos son claves para comprender el comportamiento de la red y cómo los dispositivos gestionan el tráfico de datos.
 
-**2)** Para la construcción del diagrama de red propuesto, utilizamos **Packet Tracer**, un simulador de redes que permite diseñar y configurar topologías de manera intuitiva. Este software fue elegido debido a su interfaz sencilla, su capacidad para simular el comportamiento de dispositivos de red, incluyendo routers, switches y computadoras, sin necesidad de hardware físico, así como también los conocimientos previos de su uso en otras materias.  
+**Dispositivos de Encaminamiento**  
+Los dispositivos de encaminamiento, como los routers y switches, son elementos clave en la interconexión de redes. Su función principal es determinar la ruta óptima para el tráfico de datos, asegurando que los paquetes lleguen a su destino de manera eficiente. Utilizan tablas de encaminamiento para tomar decisiones basadas en direcciones IP y protocolos de enrutamiento.
+
+En redes IPv6, los dispositivos de encaminamiento también manejan funciones avanzadas, como la gestión de anycast y multicast, optimizando el tráfico dentro de la red. Además, estos dispositivos procesan mensajes ICMP para informar sobre errores en la transmisión de datos.
+
+**Segmentación y Reensamblado**  
+Los datos transmitidos en una red deben dividirse en unidades más pequeñas para su transporte eficiente. Este proceso se llama segmentación, y permite que la información se envíe en fragmentos que luego son reensamblados en el destino.
+
+El reensamblado ocurre en el nodo final y requiere que los fragmentos sean recibidos en el orden correcto. Si un fragmento se pierde, el protocolo superior (por ejemplo, TCP) debe solicitar su retransmisión.
+
+**Fragmentación en IPv6**  
+A diferencia de IPv4, donde los routers intermedios pueden fragmentar paquetes, IPv6 solo permite la fragmentación en el nodo origen. Para evitar fragmentación en la red, IPv6 introduce el concepto de MTU (Unidad Máxima de Transferencia), lo que obliga al nodo origen a determinar el tamaño máximo permitido antes de enviar los datos.
+
+En IPv6, la cabecera de fragmentación contiene información que permite a los dispositivos finales reconstruir los datos correctamente. Esta cabecera incluye campos como:
+- Identificación del paquete, que permite distinguir diferentes fragmentos.
+- Desplazamiento del fragmento, que indica la posición dentro del paquete original.
+- Indicador M, que señala si hay más fragmentos.
+
+**Tiempo de Vida del Datagram**  
+El Tiempo de Vida (TTL) en IPv4 y su equivalente en IPv6, el Límite de Saltos, es un mecanismo que evita que los paquetes circulen indefinidamente por la red. Cada vez que un paquete atraviesa un router, este campo se decrementa en 1. Si el valor llega a 0, el paquete es descartado y se envía un mensaje ICMP al remitente indicando el error.
+
+Este mecanismo es crucial para evitar congestión y garantizar que los paquetes lleguen a su destino en un tiempo razonable.
+
+**Análisis de Tráfico y Protocolos Relacionados**  
+El tráfico de red puede analizarse mediante herramientas que permiten capturar y estudiar los paquetes transmitidos. En este análisis, es importante comprender los siguientes protocolos:
+
+ARP (Address Resolution Protocol): Usado para resolver direcciones IP en direcciones MAC dentro de una red local.
+NDP (Neighbor Discovery Protocol): Utilizado en IPv6 para la detección de vecinos y la resolución de direcciones IP.
+ICMP (Internet Control Message Protocol): Responsable de enviar mensajes de error y diagnóstico en la red.
+El análisis del tráfico permite detectar problemas de conectividad, verificar la correcta asignación de direcciones y optimizar el rendimiento de la red.
+
+
+**2)**  
+Para la construcción del diagrama de red propuesto, utilizamos **Packet Tracer**, un simulador de redes que permite diseñar y configurar topologías de manera intuitiva. Este software fue elegido debido a su interfaz sencilla, su capacidad para simular el comportamiento de dispositivos de red, incluyendo routers, switches y computadoras, sin necesidad de hardware físico, así como también los conocimientos previos de su uso en otras materias.  
 
 <p align="center">
     <img src="./img/TPN1_diagrama.jpg"><br>
@@ -52,11 +86,13 @@ El objetivo principal es comprender el funcionamiento de estos protocolos en un 
 </p>
 
 
-**3)** Los simuladores son herramientas diseñadas para reproducir el comportamiento de sistemas reales o abstractos con el propósito de facilitar su comprensión y aprendizaje. Aunque pueden modelar el funcionamiento de un sistema, no necesariamente replican su estructura interna. Por ejemplo, un simulador de tráfico puede representar el movimiento de los vehículos en una ciudad sin reproducir el hardware involucrado.
+**3)**  
+Los simuladores son herramientas diseñadas para reproducir el comportamiento de sistemas reales o abstractos con el propósito de facilitar su comprensión y aprendizaje. Aunque pueden modelar el funcionamiento de un sistema, no necesariamente replican su estructura interna. Por ejemplo, un simulador de tráfico puede representar el movimiento de los vehículos en una ciudad sin reproducir el hardware involucrado.
 
 Por otro lado, los emuladores permiten ejecutar software destinado a una plataforma específica en un entorno diferente, garantizando la compatibilidad entre sistemas. Su función es recrear tanto el software como el hardware del sistema original, imitando aspectos como la arquitectura del procesador, la memoria y otros componentes. Un ejemplo común es el emulador de consolas retro, que posibilita la ejecución de videojuegos antiguos en computadoras modernas. A diferencia de los simuladores, los emuladores buscan replicar con precisión la plataforma original, permitiendo que el software funcione como lo haría en su entorno nativo.
 
-**4)** Para evaluar la conectividad entre los dispositivos en la red configurada, realizamos pruebas de conectividad enviando paquetes ICMPv4 mediante el comando `ping` a las direcciones IP de los distintos hosts.
+**4)**  
+Para evaluar la conectividad entre los dispositivos en la red configurada, realizamos pruebas de conectividad enviando paquetes ICMPv4 mediante el comando `ping` a las direcciones IP de los distintos hosts.
 
 <p align="center">
     <img src="./img/TPN1_h1pingIPv4.jpg"><br>
@@ -65,7 +101,8 @@ Por otro lado, los emuladores permiten ejecutar software destinado a una platafo
 
 Los resultados obtenidos en la prueba de conectividad con ICMPv4 fueron que se enviaron 4 paquetes, de los cuales 3 fueron recibidos correctamente y 1 se perdió, resultando en una pérdida del 25%. En ambos casos, el tiempo de ida y vuelta de los paquetes recibidos fue 0 ms y el TTL (Time To Live) de las respuestas de los hosts de destino fue 127 (indicando que los dispositivos se encontraban a un solo salto de distancia).
 
-**5)** Para la evaluación de la conectividad en IPv6, realizamos pruebas enviando los paquetes ICMPv6 a cada host de la red, mediante el comando `ping` (y no `ping6`). 
+**5)**  
+Para la evaluación de la conectividad en IPv6, realizamos pruebas enviando los paquetes ICMPv6 a cada host de la red, mediante el comando `ping` (y no `ping6`). 
 
 <p align="center">
     <img src="./img/TPN1_h1pingIPv6.jpg"><br>
@@ -74,7 +111,8 @@ Los resultados obtenidos en la prueba de conectividad con ICMPv4 fueron que se e
 
 Los resultados obtenidos fueron que la conectividad en la red IPv6 se encuentra en óptimas condiciones, sin pérdidas de paquetes y con un tiempo de ida y vuelta mínimo de 0 ms. En las pruebas de IPv6, el TTL en las respuestas es 255, lo que indica que los dispositivos están dentro de la misma red (a diferencia con las pruebas en IPv4).
 
-**6)** Desde el diagrama de red propuesto, iniciamos el tráfico ICMP para analizarlo sobre las dos redes.
+**6)**  
+Desde el diagrama de red propuesto, iniciamos el tráfico ICMP para analizarlo sobre las dos redes.
 
 <p align="center">
     <img src="./img/TPN1_traficoICMP.jpg"><br>
@@ -141,7 +179,8 @@ Cuando llega la solicitud ICMP al router este repite el proceso para obtener la 
   9) En IPv4, la multidifusión o multicast es un método de transmisión que permite enviar información a un grupo específico de receptores configurados para recibirla. En lugar de enviar múltiples copias individuales, el emisor transmite los datos una sola vez a una dirección de multicast, y la red se encarga de distribuirlos eficientemente a todos los destinatarios dentro del grupo.
   Este tipo de tráfico es especialmente útil para la distribución masiva de datos, permitiendo que un único flujo llegue simultáneamente a múltiples dispositivos. Se emplea comúnmente en aplicaciones de transmisión multimedia, como streaming de video y música, así como en videoconferencias y en la distribución de configuraciones o actualizaciones a varios dispositivos dentro de una red local.
 
-**7)** A continuación iniciamos tráfico ICMPv6 (ping IPv6) entre h1 a h3.
+**7)**  
+A continuación iniciamos tráfico ICMPv6 (ping IPv6) entre h1 a h3.
 
 <p align="center">
       <img src="./img/TPN1_traficoNDP.png"><br>
@@ -197,7 +236,7 @@ Luego, cuando el mensaje ICMPv6 llega al router este repite el procedimiento par
 
 En esta segunda parte del trabajo práctico N°1, el objetivo es configurar y administrar un switch Cisco Catalyst 2950 [1]. Establecer conexión mediante PUTTY, modificando claves de acceso y realizar pruebas de conectividad. Además, se analizará el tráfico de red, evaluando protocolos como ARP, NDP e ICMP, y configurando DHCP y mirroring de puertos para monitoreo.
 
-**Palabras clave**: _Switch Cisco Catalyst 2950, administración, contraseñas, ARP, NDP, ICMP, DHCP, configuración de red, análisis de tráfico, mirroring de puertos_
+**Palabras clave**: _Switch Cisco Catalyst 2950, Administración, Contraseñas, ARP, NDP, ICMP, Tiempo de vida del datagrama, Configuración de red, Análisis de tráfico, Mirroring de puertos_
 
 ---
 
