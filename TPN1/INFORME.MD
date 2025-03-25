@@ -378,7 +378,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor, mauris sit 
 
 ## Discusión y conclusiones
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor, mauris sit amet aliquet vestibulum, enim ante consectetur enim, vel sollicitudin odio risus vel libero. Integer eget ipsum sed eros luctus laoreet vel vel leo. Fusce ut dapibus nisl. Aliquam erat volutpat. Donec in elit non justo convallis vestibulum.
+Durante la realización de este trabajo se demostró la facilidad con la que se puede modelar y crear una red LAN pequeña una vez adquiridos los conocimientos teóricos previos necesarios. Personalmente creemos que el paso de modelar la red es también un paso necesario para lograr una ejecución más rápida y sencilla.
 
 ## Referencias
 
