@@ -26,9 +26,9 @@ Santiago M Henn
 
 ## Resumen
 
-En esta primera parte del Trabajo Práctico N°1, el objetivo es configurar un esquema de red dual stack, utilizando tanto IPv4 como IPv6, en un entorno simulado o emulado. Se analizará el tráfico de red y el comportamiento de protocolos clave como ARP, NDP e ICMP, además de implementar la asignación dinámica de direcciones mediante DHCP.  
+En esta primera parte del Trabajo Práctico N°1, el objetivo es configurar un esquema de red dual stack, utilizando tanto IPv4 como IPv6, en un entorno simulado o emulado. Se analizará el tráfico de red y el comportamiento de protocolos clave como ARP, NDP e ICMP.  
 
-**Palabras clave**: _Interconexion de redes, Internet IPv4, IPv6, ARP, NDP, ICMP, ping, DHCP, Switch, Router_
+**Palabras clave**: _Interconexion de redes, Internet IPv4, IPv6, ARP, NDP, ICMP, ping, Switch, Router_
 
 ---
 
@@ -234,7 +234,7 @@ Luego, cuando el mensaje ICMPv6 llega al router este repite el procedimiento par
 
 ## Resumen
 
-En esta segunda parte del trabajo práctico N°1, el objetivo es configurar y administrar un switch Cisco Catalyst 2950 [1]. Establecer conexión mediante PUTTY, modificando claves de acceso y realizar pruebas de conectividad. Además, se analizará el tráfico de red, evaluando protocolos como ARP, NDP e ICMP, y configurando DHCP y mirroring de puertos para monitoreo.
+En esta segunda parte del trabajo práctico N°1, el objetivo es configurar y administrar un switch Cisco Catalyst 2950 [1]. Establecer conexión mediante PUTTY, modificando claves de acceso y realizar pruebas de conectividad. Además, se analizará el tráfico de red, evaluando protocolos como ARP, NDP e ICMP y mirroring de puertos para monitoreo.
 
 **Palabras clave**: _Switch Cisco Catalyst 2950, Administración, Contraseñas, ARP, NDP, ICMP, Tiempo de vida del datagrama, Configuración de red, Análisis de tráfico, Mirroring de puertos_
 
