@@ -329,18 +329,20 @@ Estos son los procedimientos sugeridos:
         <em>Figura 17: SPAN en switch.</em>
       </p>
 
-   - Capturar el trafico con Wireshark. En la PC3, abrir Wireshark y seleccionar la interfaz de red conectada al switch. Iniciar la captura y observar los paquetes entre PC1 y PC2.
-   - Hacer uso del comando `ping` entre PC1 y PC2, para verificar en Wireshark que los paquetes aparecen como ICMP.
+## Resultados
 
-      <p align="center">
-        <img src="./img/TPN1_WireSharkICMP.jpg"><br>
-        <em>Figura 18: Ping en WireShark.</em>
-      </p>
+Capturando el trafico con Wireshark desde la PC3, seleccionando la interfaz de red conectada al switch, se inicia la captura y observamos los paquetes entre PC1 y PC2. Al hacer uso del comando `ping` entre PC1 y PC2, se verifica en Wireshark que los paquetes aparecen como ICMP.
 
-      <p align="center">
-        <img src="./img/TPN1_WireSharkICMP(mas).jpg"><br>
-        <em>Figura 19: Ping en WireShark.</em>
-      </p>
+
+  <p align="center">
+    <img src="./img/TPN1_WireSharkICMP.jpg"><br>
+    <em>Figura 18: Ping en WireShark.</em>
+  </p>
+
+  <p align="center">
+    <img src="./img/TPN1_WireSharkICMP(mas).jpg"><br>
+    <em>Figura 19: Ping en WireShark.</em>
+  </p>
 
 **3)**  
 Replicando los pasos realizados en las actividades 6.1, 6.2, 6.3 y 6.4 en la Parte 1 del TPN1, obtenemos los siguientes resultados.  
@@ -351,28 +353,24 @@ Las comunicaciones ARP observadas a través de WireShark fueron:
     <em>Figura 20: Ping en WireShark.</em>
   </p>
 
-Las direcciones IP en los datagramas observados fueron:
+Analizando el paquete en hexadecimal:
+
+```
+80 fa 5b 9a 00 13 40 c2 ba e2 c6 e3 08 06 00 01
+08 00 06 04 00 02 40 c2 ba e2 c6 e3 c0 a8 01 0b
+80 fa 5b 9a 00 13 c0 a8 01 0a 00 00 00 00 00 00
+```
+
+Los primeros 14 bytes son el encabezado Ethernet, luego vienen los primeros 28 bytes de ARP indicando tipo de protocolo, operación, etc. Como sabemos que son direcciones MAC de 6 bytes e IPv4 de 4, los siguientes 6 bytes serán la MAC de origen y los bytes "c0 a8 01 0b" son la IP, traducida a decimal obtenemos "192.168.1.11".
+ 
+Repitiendo el proceso sabemos que los siguientes 6 bytes son la MAC de destino y los siguientes 4 ("c0 a8 01 0a") la IPv4 de destino, que en decimal son "192.168.1.10".
+
+ARP es un protocolo de la capa de transporte, pero si trabajamos con protocolos decapas superiores Wiredhark nos permitirá observar las direcciones IP de origen y destino de forma más clara como se demuestra en las siguientes imágenes:
 
   <p align="center">
     <img src="./img/TPN1_WireSharkPC2aPC1conTCP.jpg"><br>
-    <em>Figura 21: ???.</em>
+    <em>Figura 21: Transmisión de mensaje "Hola desde el servidor".</em>
   </p>
-
-  <p align="center">
-    <img src="./img/TPN1_WireSharkPC2aPC1conTCPRecepcion.jpg"><br>
-    <em>Figura 22: ???.</em>
-  </p>
-
-  <p align="center">
-    <img src="./img/TPN1_WireSharkPC2aPC1conTCPConfirmacion.jpg"><br>
-    <em>Figura 23: ???.</em>
-  </p>
-
-
-
-## Resultados
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor, mauris sit amet aliquet vestibulum, enim ante consectetur enim, vel sollicitudin odio risus vel libero. Integer eget ipsum sed eros luctus laoreet vel vel leo. Fusce ut dapibus nisl. Aliquam erat volutpat. Donec in elit non justo convallis vestibulum.
 
 ---
 
