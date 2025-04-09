@@ -48,7 +48,7 @@ En este trabajo práctico se abordan conceptos fundamentales de enrutamiento y a
   Se realizaron pruebas de conectividad con el comando `ping` con otros hosts dentro del mismo grupo, como de otros grupos (IP del hosts perteneciente a otro grupo es _192.168.3.100_).
 
   <p align="center">
-    <img src="./img/TPN2_ping_PC1_a_PC2.png"><br>
+    <img src="./img/TPN2_ping_PC1_a_PC2.jpg"><br>
     <em>Figura 1: ping de PC1 a PC2.</em>
   </p>
 
@@ -62,7 +62,7 @@ En este trabajo práctico se abordan conceptos fundamentales de enrutamiento y a
   En ambas PCs del grupo, se repitio el proceso a la IP del host de otro grupo:
 
   <p align="center">
-    <img src="./img/TPN2_ping_PC1_a_Feli.png"><br>
+    <img src="./img/TPN2_ping_PC1_a_Feli.jpg"><br>
     <em>Figura 3: ping de PC1 a otro host.</em>
   </p>
 
@@ -74,13 +74,9 @@ En este trabajo práctico se abordan conceptos fundamentales de enrutamiento y a
   Se logro una respuesta positiva, sin perdida de paquetes. Los tiempos de respuesta fueron un poco más altos en comparacion entre PC1 y PC2, lo cual es esperable por el mayor recorrido dentro de la red.
 
 
-2) HACER Descargar iperf3: https://iperf.fr y resumir los principales comandos para realizar pruebas configurando:  
-    a) Protocolos TCP y UDP  
-    b) Número y tamaño de paquetes  
-    c) Frecuencia/tiempo  
-    d) Ancho de banda  
+**2)**
 
-3) HACER Configurar Wireshark (o algún software de sniffing similar) para filtrar tráfico basándose en las IPs de partida/destino. Capturar tráfico y ejecutar pruebas con un host (pc) como servidor y otro como cliente, con distintas configuraciones de protocolos y configuraciones entre:  
+1) HACER Configurar Wireshark (o algún software de sniffing similar) para filtrar tráfico basándose en las IPs de partida/destino. Capturar tráfico y ejecutar pruebas con un host (pc) como servidor y otro como cliente, con distintas configuraciones de protocolos y configuraciones entre:  
     a) Dos computadoras en un mismo grupo (no olvidar configurar el capturador en loopback)  
     b) Una computadora de un grupo y computadoras de al menos otros 2 (dos) grupos  
 
@@ -101,4 +97,4 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 ## Referencias
 
-[1] TITULO [AUTOR](link)
+[1] iPerf 3 user documentation [Dugan, Elliott, Mah, Poskanzer, Prabhu]([link](https://iperf.fr/iperf-doc.php))
