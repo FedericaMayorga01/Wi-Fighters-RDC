@@ -75,6 +75,73 @@ En este trabajo práctico se abordan conceptos fundamentales de enrutamiento y a
 
 
 **2)**
+  
+  Para realizar estas pruebas, es necesario tener una PC como **servidor** y otra como **cliente**. En este caso, la direccion IP del servidor fue _192.168.3.89_ (PC2) y la del cliente fue _192.168.3.88_ (PC1).
+
+  En el servidor, se ejecuta el comando ``iperf3 -s``, como se observa en la imagen.
+    
+  <p align="center">
+    <img src="./img/TPN2_iperf_srv.jpg"><br>
+    <em>Figura 5: PC2 como servidor.</em>
+  </p>
+
+  En el cliente, se ejecuta el comando ``iperf3 -c 192.168.3.89``, como se observa en la imagen.
+
+  <p align="center">
+    <img src="./img/TPN2_iperf_client.jpg"><br>
+    <em>Figura 6: PC1 como cliente.</em>
+  </p>
+
+  Esto realiza una prueba utilizando el protocolo TCP durante 10 segundos, con un tamaño estandar y sin limitar el ancho de banda.
+
+  Para realizar la prueba a), como iperf3 ya utiliza TCP por defecto, solo seria necesario hacer la prueba de UDP, utilizando el comando ``iperf3 -u -c 192.168.3.89``, como se observa en la imagen.
+
+  <p align="center">
+    <img src="./img/TPN2_iperf_client_test2_UDP.jpg"><br>
+    <em>Figura 7: Prueba de UDP desde el cliente.</em>
+  </p>
+
+  <p align="center">
+    <img src="./img/TPN2_iperf_srv_test2_UDP.jpg"><br>
+    <em>Figura 8: Prueba de UDP desde el servidor.</em>
+  </p>
+
+  Para realizar la prueba b), se puede definir la cantidad de paquetes con la opcion ``-k`` (blockcount), en nuestro caso a 7 y también, modificar el tamaño del buffer usando la opcion ``-l`` (length), a 256 bytes.
+
+  <p align="center">
+    <img src="./img/TPN2_iperf_client_test1_size.jpg"><br>
+    <em>Figura 9: Prueba de número y tamaño de paquetes desde el cliente.</em>
+  </p>
+
+  <p align="center">
+    <img src="./img/TPN2_iperf_srv_test1_size.jpg"><br>
+    <em>Figura 10: Prueba de número y tamaño de paquetes desde el servidor.</em>
+  </p>
+
+  Para realizar la prueba c), se puede ajustar el tiempo de duración en segundos de la prueba con la opcion ``-t`` (time), en nuestro caso de 20 segundos.
+
+  <p align="center">
+    <img src="./img/TPN2_iperf_client_test4_time.jpg"><br>
+    <em>Figura 11: Prueba de tiempo en el cliente.</em>
+  </p>
+
+  <p align="center">
+    <img src="./img/TPN2_iperf_srv_test4_time.jpg"><br>
+    <em>Figura 12: Prueba de tiempo en el servidor.</em>
+  </p>
+
+  Y finalmente, para realizar la prueba d), se puede limitar o simular un ancho de banda con la opcion ``-b`` (bandwidth), en nuestro caso de 5 bits/seg.
+
+  <p align="center">
+    <img src="./img/TPN2_iperf_client_test3_anchodebanda.jpg"><br>
+    <em>Figura 13: Prueba de ancho de banda en el cliente.</em>
+  </p>
+
+  <p align="center">
+    <img src="./img/TPN2_iperf_srv_test3_anchodebanda.jpg"><br>
+    <em>Figura 14: Prueba de ancho de banda en el servidor.</em>
+  </p>
+
 
 1) HACER Configurar Wireshark (o algún software de sniffing similar) para filtrar tráfico basándose en las IPs de partida/destino. Capturar tráfico y ejecutar pruebas con un host (pc) como servidor y otro como cliente, con distintas configuraciones de protocolos y configuraciones entre:  
     a) Dos computadoras en un mismo grupo (no olvidar configurar el capturador en loopback)  
