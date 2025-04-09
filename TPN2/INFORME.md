@@ -75,7 +75,6 @@ En este trabajo práctico se abordan conceptos fundamentales de enrutamiento y a
 
 
 **2)**
-  
   Para realizar estas pruebas, es necesario tener una PC como **servidor** y otra como **cliente**. En este caso, la direccion IP del servidor fue _192.168.3.89_ (PC2) y la del cliente fue _192.168.3.88_ (PC1).
 
   En el servidor, se ejecuta el comando ``iperf3 -s``, como se observa en la imagen.
@@ -143,16 +142,37 @@ En este trabajo práctico se abordan conceptos fundamentales de enrutamiento y a
   </p>
 
 
-1) HACER Configurar Wireshark (o algún software de sniffing similar) para filtrar tráfico basándose en las IPs de partida/destino. Capturar tráfico y ejecutar pruebas con un host (pc) como servidor y otro como cliente, con distintas configuraciones de protocolos y configuraciones entre:  
-    a) Dos computadoras en un mismo grupo (no olvidar configurar el capturador en loopback)  
-    b) Una computadora de un grupo y computadoras de al menos otros 2 (dos) grupos  
+**3)**  
+  Para analizar el tráfico de red generado por las pruebas con **iperf3**, se utilizó **Wireshark**, como herramienta de sniffing que permite capturar y filtrar paquetes de red en tiempo real. 
 
-Documentar capturas de wireshark y las consolas corriendo iperf.
+  Configuracion previa:
+  - Abrir Wireshark
+  - Seleccionar la interfaz Ethernet o cableada
+    - (La interfaz loopback (``lo`` en Linux o ``Loopback`` en Windows))
+  - Poner en el filtro: ``host 192.168.3.88`` o ``host 192.168.3.89`` (segun necesario).
+  - Sacar un screenshot del wireshark
+  
+  Pasos a cumplir para hacer este ejercicio a):
+  - En PC1 (servidor): ``iperf3 -s``
+  - En PC2 (cliente): ``iperf3 -c 192.168.3.89``
+  - Hacer otras pruebas agregando parámetros como:
+    - UDP: ``iperf3 -u -c 192.168.3.89``
+    - Time: ``iperf3 -c 192.168.1.4 -t 10``
+    - Size: ``iperf3 -c 192.168.1.4 -l 1024``
+  - Aplicar un filtro post-captura en Wireshark: ``ip.addr == 192.168.3.89 && ip.addr == 192.168.3.88``
+  - Sacar un screenshot del wireshark
 
-4) HACER Elaborar conclusiones sobre los siguientes aspectos:
+    Pasos a cumplir para hacer este ejercicio b):
+    - Nosotros hacemos de servidor con: ``iperf3 -s``
+    - Compañero de otro grupo como cliente: ``iperf3 -c 192.168.3.89``
+    - Sacar screenshots del cliente (otra PC de otro grupo)
+    - Sacar un screenshot del wireshark con el trafico entre las pcs
+
+
+1) HACER Elaborar conclusiones sobre los siguientes aspectos:
 ¿Cuál es el ancho de banda promedio de la prueba? ¿Cuánto duró la prueba? ¿Cuál es el tamaño promedio de paquetes? ¿Observas alguna diferencia entre UDP y TCP?¿Observamos relación entre alguno de los parámetros de la prueba y la pérdida de paquetes?
 
-5) HACER Ejecutar una prueba como cliente desde una computadora del grupo hacia un servidor propuesto en clase.
+1) HACER Ejecutar una prueba como cliente desde una computadora del grupo hacia un servidor propuesto en clase.
 Documentar los resultados y elaborar conclusiones sobre los aspectos del punto 4, además de comparar
 con los resultados de las pruebas del punto 3)
 
