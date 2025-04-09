@@ -25,12 +25,14 @@ Santiago M Henn
 ---
 
 ## Resumen
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+El TPN2 propone el diseño e implementación de una topología de red física multi-path entre varios grupos, usando equipamiento de laboratorio (PCs, switches y routers). Las tareas incluyen configuracion IP fija en cada dispositivo, el uso de **iperf3** para realizar pruebas de rendimiento, capturar y analizar tráfico con **Wireshark** y elaborar conclusiones en base a las mediciones recolectadas.  
+
+**Palabras clave**: _Topología, enrutamiento, multi-path, iperf3, wireshark, TCP, UDP, ancho de banda, captura de trafico, performance_.
 
 ---
 
 ## Introducción
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+En este trabajo práctico se abordan conceptos fundamentales de enrutamiento y análisis de rendimiento en redes informáticas, aplicando configuraciones tanto estáticas como dinámicas. El enfoque principal está puesto en el diseño y evaluación de topologías de red físicas con multi-path, utilizando herramientas como **iperf3** y **Wireshark** para realizar mediciones y observar el comportamiento del tráfico. Se busca integrar conocimientos teóricos con la práctica en laboratorio, trabajando en conjunto para construir una red compleja y compartida entre grupos.
 
 ---
 
@@ -38,7 +40,39 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 ## Consignas
 
-1) HACER Configurar los dispositivos/PCs con IPs fijas y comprobar conexión con paquetes ICMP entre hosts bajo el mismo switch, y entre distintos grupos.
+**1)**  
+   Para cumplir con esta consigna, se configuraron las siguientes direcciones IP fijas en nuestras computadoras del grupo:
+   - **PC1:** _192.168.3.88_
+   - **PC2:** _192.168.3.89_  
+  
+  Se realizaron pruebas de conectividad con el comando `ping` con otros hosts dentro del mismo grupo, como de otros grupos (IP del hosts perteneciente a otro grupo es _192.168.3.100_).
+
+  <p align="center">
+    <img src="./img/TPN2_ping_PC1_a_PC2.png"><br>
+    <em>Figura 1: ping de PC1 a PC2.</em>
+  </p>
+
+  <p align="center">
+    <img src="./img/TPN2_ping_PC2_a_PC1.jpg"><br>
+    <em>Figura 2: ping de PC2 a PC1.</em>
+  </p>
+
+  Se observa conectividad estable, sin perdida de paquetes y con tiempos similares.  
+
+  En ambas PCs del grupo, se repitio el proceso a la IP del host de otro grupo:
+
+  <p align="center">
+    <img src="./img/TPN2_ping_PC1_a_Feli.png"><br>
+    <em>Figura 3: ping de PC1 a otro host.</em>
+  </p>
+
+  <p align="center">
+    <img src="./img/TPN2_ping_PC2_a_Feli.jpg"><br>
+    <em>Figura 4: ping de PC2 a otro host.</em>
+  </p>
+
+  Se logro una respuesta positiva, sin perdida de paquetes. Los tiempos de respuesta fueron un poco más altos en comparacion entre PC1 y PC2, lo cual es esperable por el mayor recorrido dentro de la red.
+
 
 2) HACER Descargar iperf3: https://iperf.fr y resumir los principales comandos para realizar pruebas configurando:  
     a) Protocolos TCP y UDP  
