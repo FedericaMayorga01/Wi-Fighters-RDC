@@ -169,10 +169,27 @@ En este trabajo práctico se abordan conceptos fundamentales de enrutamiento y a
     - Sacar un screenshot del wireshark con el trafico entre las pcs
 
 
-1) HACER Elaborar conclusiones sobre los siguientes aspectos:
-¿Cuál es el ancho de banda promedio de la prueba? ¿Cuánto duró la prueba? ¿Cuál es el tamaño promedio de paquetes? ¿Observas alguna diferencia entre UDP y TCP?¿Observamos relación entre alguno de los parámetros de la prueba y la pérdida de paquetes?
+4) Empezando por el bitrate, el resultado original de iperf3 en TCP indica un bitrate promedio de 939 Mbits/seg, de lo que se puede deducir que los dispositivos están conectados con lineas de Gigabit Ethernet ya que estos tienen una capacidad teórica de 1 Gbit por segundo (1000 Mbits/seg). Si consideramos el MTU Ethernet estándar de 1500 bytes y le descontáramos los 18 bytes del encabezado Ethernet, 20 de IPv4 y 20 de TCP, obtenemos que solo un ~96% de la capacidad podría ser utilizada como máximo, es decir 960 Mbits/seg, pero esto se reduce incluso más si consideramos los mensajes ACK de TCP.
 
-1) HACER Ejecutar una prueba como cliente desde una computadora del grupo hacia un servidor propuesto en clase.
+En cambio en el caso UDP se obtuvo un bitrate de tan solo 1.05Mbit/seg. Teóricamente UDP debería tener una mejor performance al eliminar los mensajes ACK y recuperación paquetes perdidos. Tras realizar una investigación se descubrió que iperf3 limita el ancho de banda a ~1Mbit/seg al usar la opción UDP, por lo que para realizar la comparación real se debió hacer:
+
+```
+iperf3 -u -b 1000M
+```
+
+Por el momento un análisis estadístico considerando el límite de 1Mbit/seg, pareciera indicar una performance de UDP supera el 100%, analizando el problema sabemos que el payload UDP es de 1470 bytes, la prueba indica que se transmitieron 906 paquetes en 10 segundos, esto es:
+
+$$\frac{906x1470x8btis}{10seg} = 1.05Mbits/seg$$
+
+Que demuestra que el resultado es correcto, entonces el sistema intenta simular un ancho de banda de 1Mbit/seg, pero claramente no es una regla estrícta, así considerando el MTU Ethernet de 1500 bytes, la performance será del 98%.
+
+$TCP_{perf} = \frac{939}{1000} = ~0.94$
+
+$UDP_{perf} = \frac{1470}{1500} = ~0.98$
+
+En cuanto a la prueba de tiempo no se notan diferencias significativas en los resultados en comparación a la prueba original con TCP. La prueba de número y tamaño de paquetes uso un número y tamaño de paquetes demasiado pequeño, lo que se hizo a propósito por mera curiosidad, el tiempo de la prueba como era de esperarse es tan bajo que no logra llegar a ser apreciable, a futuro sería interesante repetir esta prueba con valores más grandes que permitan medir la velocidad de la red y que, potencialmente puedan generar pérdidas de paquetes. Por último en la prueba de ancho de banda asumimos que el valor se medía en MBytes/seg y nuevamente se intentó estudiar un límite inferior, el error fue que el ancho de banda de iperf se mide en bits/seg, debiendo agregar M al final del número para indicar Mbits, aún así la prueba UDP permitió hacer un análisis a profundidad de la funcionalidad de iperf para limitar el ancho de banda.
+
+5) HACER Ejecutar una prueba como cliente desde una computadora del grupo hacia un servidor propuesto en clase.
 Documentar los resultados y elaborar conclusiones sobre los aspectos del punto 4, además de comparar
 con los resultados de las pruebas del punto 3)
 
@@ -180,7 +197,7 @@ con los resultados de las pruebas del punto 3)
 
 ## Discusión y conclusiones
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+En lo que se pudo realizar del laboratorio pudimos verificar de forma práctica el incremento de eficiencia de UDP sobre TCP, la cual aunque es claro que existe no parece ser tan significativa como se creía previamente, especialmente considerando las velocidades que alcanzan las redes modernas donde la perdida de eficiencia de la red por los mensajes ACK de TCP son cada vez menos significativos. El beneficio de UDP entonces se vé más limitado a tener un encabezado más pequeño y, en caso de perdida de paquetes, no produciría perdidas por retransmisiones, pero las redes modernas son también más confiables por lo que lo segundo también se vuelve menos relevante.
 
 ## Referencias
 
