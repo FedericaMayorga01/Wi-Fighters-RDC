@@ -25,14 +25,14 @@ Santiago M Henn
 ---
 
 ## Resumen
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.  
+El objetivo de este trabajo práctico se centra en la evaluación de performance y la configuración de ruteo interno dinámico mediante el protocolo **OSPF** (Open Shortest Path First) en un entorno virtual (Packet Tracer, en nuestro caso). Incluye desde la teoría básica de **OSPF** y algoritmos de shortest path, pasando por el diseño de un esquema de direccionamiento **IP**, hasta la puesta en marcha completa de la red: configuración de routers, verificación de vecinos y **LSDB**, ajuste de costos, redistribución de rutas y análisis de fallos. Finalmente, se comparan las tablas **RIB** y **FIB** y se documenta el impacto de las caídas de enlace.  
 
-**Palabras clave**: _Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua._.
+**Palabras clave**: _OSPF (Open Shortest Path First), IGP (Interior Gateway Protocol), Teoría de grafos, Algoritmo de Dijkstra, RIB, FIB, Costos OSPF, Redistribución de rutas, Packet Tracer_.
 
 ---
 
 ## Introducción
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+En entornos de redes de gran escala y alta disponibilidad, la elección de un protocolo de ruteo dinámico eficiente es fundamental. **OSPF** es un protocolo de enlace de estado diseñado para **IP** que ofrece rápida convergencia, escalabilidad mediante áreas y métricas basadas en costos. Basado en la teoría de grafos, **OSPF** modela la red como un grafo donde cada router intercambia información de estado de enlace (**LSDB**) con sus vecinos, y calcula rutas óptimas usando el algoritmo de Dijkstra. En este trabajo práctico se desarrolla desde la teoría hasta la implementación en un simulador, incluyendo el diseño de un esquema de direccionamiento **IP** que separa eficientemente las subredes de hosts y los enlaces punto a punto, la configuración completa de routers, la verificación y ajuste de parámetros **OSPF**, la redistribución de rutas predeterminadas y el análisis de la resiliencia ante fallos.
 
 ---
 
@@ -69,40 +69,59 @@ En cuanto al direccionamiento **IP**, **OSPF** opera sobre redes **IP** dividida
 
 **OSPF** distingue varios tipos de redes físicas y lógicas, lo que permite optimizar su funcionamiento en cada caso:
 - Redes broadcast (Ethernet, **FDDI**)
-- Redes **NBMA** (non-broadcast multi-access) como Frame Relay o X.25
+- Redes **NBMA** (non-broadcast multi-access) como Frame Relay
 - Redes punto a punto (**PPP**, **HDLC**)
 - Redes punto a multipunto, una mezcla entre **NBMA** y punto a punto, útil en topologías parcialmente malladas
 
 Cada tipo tiene implicancias sobre cómo se detectan los vecinos y cómo se elige el router designado (**DR**).
    
-2) HACER Diseñar el esquema de direccionamiento IP de la red, utilizando la segmentación de una red clase A (o B) para las redes de hosts y una red clase C para las conexiones entre routers. Elaborar una tabla de direccionamiento que refleje esta configuración.
+1)  
+En este esquema de direccionamiento, hemos seleccionado la red ``10.0.0.0/8`` (Clase A) para la **LAN** de hosts porque su amplio espacio de direcciones (más de 16 millones de direcciones útiles) permite un crecimiento futuro sin necesidad de renumerar subredes; además, al usar la máscara por defecto simplificamos la configuración inicial de los dispositivos. 
 
-3) HACER Configurar cada router para que utilice el protocolo OSPF y verificar la conexión punto a punto entre los dispositivos enlazados. Verificar que las tablas de enrutamiento contienen rutas OSPF.
+Por otro lado, para el enlace punto a punto entre routers elegimos la subred ``192.168.1.0/24`` (Clase C) con máscara ``255.255.255.0``, ya que una red que solo requiere dos direcciones efectivas no justifica desperdiciar un rango grande de direcciones. Esta segmentación de la Clase A para LAN de usuarios y la Clase C para interconexiones de routers minimiza el desperdicio de espacio de direcciones y mantiene las tablas de enrutamiento claras y escalables.
 
-4) HACER Identificar y analizar los mensajes de OSPF para comprender su funcionamiento y su impacto en la red.
+| Dispositivo | Interfaz | IP | Máscara | Red |
+| --- | --- | --- | --- | --- |
+| R1 | G0/0 | 192.168.1.1 | 255.255.255.0 | 192.168.1.0 |
+| R2 | G0/0 | 192.168.1.2 | 255.255.255.0 | 192.168.1.0 |
+| R1 | Loopback0 | 10.0.0.1 | 255.0.0.0 | 10.0.0.0 |
+| PC1 | NIC | 10.0.0.2 | 255.0.0.0 | 10.0.0.0 |
 
-5) HACER Configurar los routers para:
+3)  
+HACER Configurar cada router para que utilice el protocolo OSPF y verificar la conexión punto a punto entre los dispositivos enlazados. Verificar que las tablas de enrutamiento contienen rutas OSPF.
+
+4)  
+HACER Identificar y analizar los mensajes de OSPF para comprender su funcionamiento y su impacto en la red.
+
+5)  
+HACER Configurar los routers para:
     a) Notificar las redes conectadas directamente al router.
     b) Leer las entradas de la Base de Datos de Estado de Enlace (LSDB) en cada uno de los routers.
 
-6) HACER Definir las áreas de OSPF de la siguiente manera: R1 y R2 están en el área A, el resto de los routers estarán en el área B. Leer las entradas LSDB en cada uno de los routers.
+6)  
+HACER Definir las áreas de OSPF de la siguiente manera: R1 y R2 están en el área A, el resto de los routers estarán en el área B. Leer las entradas LSDB en cada uno de los routers.
    
-7) HACER Verificar el funcionamiento de OSPF:
+7)  
+HACER Verificar el funcionamiento de OSPF:
     a) En el router R2 consultar la información acerca de los vecinos R1 y R3 de OSPF.
     b) En el router R2 consultar la información sobre las operaciones del protocolo de enrutamiento.
 
-8) HACER Configurar el costo de OSPF:
+8)  
+HACER Configurar el costo de OSPF:
     a) Modificar los costos de las rutas OSPF para observar cómo afecta el funcionamiento del protocolo.
     b) Realizar pruebas entre los clientes de los diferentes routers utilizando traceroute antes y después de la modificación para verificar el funcionamiento.
 
-9) HACER Redistribuir una ruta OSPF predeterminada:
+9)  
+HACER Redistribuir una ruta OSPF predeterminada:
     a) Configurar una dirección de loopback en R1 para simular un enlace a un proveedor de servicios de Internet (ISP).
     b) Configurar una ruta estática predeterminada en el router R1.
     c) Incluir la ruta estática predeterminada en las actualizaciones de OSPF enviadas desde el router R1.
 
-10)  HACER Explicar el impacto en toda la red si se cae una interfaz del router R2 (R2 - R1, R2 - R3, R2 - S1).
+10)  
+HACER Explicar el impacto en toda la red si se cae una interfaz del router R2 (R2 - R1, R2 - R3, R2 - S1).
     
-11) HACER ¿La tabla RIB (Routing Information Base) es lo mismo que la tabla FIB (Forwarding Information Base)? Justificar con capturas del práctico.
+11)  
+HACER ¿La tabla RIB (Routing Information Base) es lo mismo que la tabla FIB (Forwarding Information Base)? Justificar con capturas del práctico.
 
 
 ## Resultados
