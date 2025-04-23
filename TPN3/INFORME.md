@@ -14,7 +14,7 @@ _Ignacio A Rivarola_
 Facundo N Oliva Cuneo  
 Santiago M Henn  
 **Fecha**
-17/04/25  
+24/04/25  
 
 ---
 
@@ -40,7 +40,40 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 ## Consignas
 
-1) HACER Elaborar una pequeña introducción teórica al OSPF, clases de redes y algoritmos de shortest path. ¿Cómo se aplica la teoría de grafos (graphs) a las redes, y en particular, a las redes OSPF?
+1)  
+Open Shortest Path First (**OSPF**) es un protocolo de enrutamiento dinámico de tipo Interior Gateway Protocol (**IGP**), diseñado específicamente para redes **IP**. Desarrollado por el grupo de trabajo **OSPF** de la **IETF**, su versión más conocida y utilizada es la versión 2 (definida en el **RFC 2328**), especialmente implementada en entornos Cisco. **OSPF** permite el enrutamiento dentro de un sistema autónomo mediante un enfoque jerárquico basado en áreas y tiene la capacidad de manejar redes complejas, redistribuir rutas desde otros protocolos, autenticar paquetes y optimizar el uso del ancho de banda utilizando **IP** multicast.
+
+Desde el punto de vista teórico, **OSPF** está fuertemente basado en la teoría de grafos. La red se representa como un grafo dirigido y ponderado, donde:
+- Cada router es un nodo.
+- Cada enlace entre routers es una arista con un peso (costo) asociado.
+
+Para determinar la mejor ruta a cada destino, **OSPF** utiliza el algoritmo de Dijkstra, también conocido como Shortest Path First (**SPF**). Este algoritmo encuentra el camino más corto desde un nodo origen (el router) hacia todos los demás nodos del grafo (la red), tomando como criterio de optimización el menor costo acumulado.
+
+
+El proceso para encontrar los caminos más cortos con el algoritmo de Dijkstra es el siguiente:
+- Se inicializa la distancia del nodo origen en 0 y todas las demás distancias en infinito.
+- Se introduce el nodo origen en una estructura eficiente como un min heap (cola de prioridad) con la forma <distancia, nodo>.
+- Se extrae el nodo con menor distancia del heap.
+- Para cada vecino del nodo actual:
+    - Se calcula la nueva distancia: ``dist[v] = dist[u] + peso[u][v]``
+    - Si la nueva distancia es menor a la registrada, se actualiza y se reintroduce en el heap.
+- Este proceso se repite hasta que el heap esté vacío.
+- El resultado es una tabla con la menor distancia desde el origen a cada nodo.
+
+**OSPF** aplica este algoritmo sobre su base de datos de estado de enlace (**LSDB**) para generar la tabla de enrutamiento más eficiente posible.
+
+En cuanto al direccionamiento **IP**, **OSPF** opera sobre redes **IP** divididas en clases, aunque en la práctica moderna se utiliza subneteo sin depender estrictamente de las clases originales:
+- **Clase A (rango 0.0.0.0 a 127.255.255.255):** para grandes redes con muchos hosts.
+- **Clase B (rango 128.0.0.0 a 191.255.255.255):** para redes medianas.
+- **Clase C (rango 192.0.0.0 a 223.255.255.255):** para redes pequeñas, comúnmente usada para enlaces entre routers por su tamaño reducido.
+
+**OSPF** distingue varios tipos de redes físicas y lógicas, lo que permite optimizar su funcionamiento en cada caso:
+- Redes broadcast (Ethernet, **FDDI**)
+- Redes **NBMA** (non-broadcast multi-access) como Frame Relay o X.25
+- Redes punto a punto (**PPP**, **HDLC**)
+- Redes punto a multipunto, una mezcla entre **NBMA** y punto a punto, útil en topologías parcialmente malladas
+
+Cada tipo tiene implicancias sobre cómo se detectan los vecinos y cómo se elige el router designado (**DR**).
    
 2) HACER Diseñar el esquema de direccionamiento IP de la red, utilizando la segmentación de una red clase A (o B) para las redes de hosts y una red clase C para las conexiones entre routers. Elaborar una tabla de direccionamiento que refleje esta configuración.
 
@@ -67,7 +100,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
     b) Configurar una ruta estática predeterminada en el router R1.
     c) Incluir la ruta estática predeterminada en las actualizaciones de OSPF enviadas desde el router R1.
 
-10) HACER Explicar el impacto en toda la red si se cae una interfaz del router R2 (R2 - R1, R2 - R3, R2 - S1).
+10)  HACER Explicar el impacto en toda la red si se cae una interfaz del router R2 (R2 - R1, R2 - R3, R2 - S1).
     
 11) HACER ¿La tabla RIB (Routing Information Base) es lo mismo que la tabla FIB (Forwarding Information Base)? Justificar con capturas del práctico.
 
