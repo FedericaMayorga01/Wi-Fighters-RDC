@@ -75,7 +75,7 @@ En cuanto al direccionamiento **IP**, **OSPF** opera sobre redes **IP** dividida
 
 Cada tipo tiene implicancias sobre cómo se detectan los vecinos y cómo se elige el router designado (**DR**).
    
-1)  
+2)  
 En este esquema de direccionamiento, hemos seleccionado la red ``10.0.0.0/8`` (Clase A) para la **LAN** de hosts conectados al switch 1 porque su amplio espacio de direcciones (más de 16 millones de direcciones útiles) permite un crecimiento futuro sin necesidad de re enumerar subredes; además, al usar la máscara por defecto simplificamos la configuración inicial de los dispositivos. 
 
 Para diferenciar las redes en las otras redes de hosts se usarán las redes clase B ``172.16.0.0/16`` y ``172.17.0.0/16``
@@ -147,25 +147,94 @@ Una vez repetimos este proceso en cada router podemos verificar el funcionamient
       <em>Figura 5: Ping desde PC3 (10.0.0.4) a PC4 (172.17.0.2).</em>
   </p>
 
-Podemos ademas verificar que las rutas son OSPF verificando las tablas de enrutamiento en los routers.
+Podemos ademas verificar que las rutas son **OSPF** verificando las tablas de enrutamiento en los routers.
 
 <p align="center">
       <img src="./img/TPN3_R3_tabla_de_ruteo.png"><br>
       <em>Figura 6: Tabla de ruteo Router R3.</em>
   </p>
 
-La letra O al inicio de cada linea indica que es una ruta OSPF (Como lo indica la sección *Codes* al inicio del mensaje).
+La letra O al inicio de cada linea indica que es una ruta **OSPF** (Como lo indica la sección *Codes* al inicio del mensaje).
 
 4)  
-HACER Identificar y analizar los mensajes de OSPF para comprender su funcionamiento y su impacto en la red.
+Para comprender el funcionamiento de **OSPF** y su impacto en la red, se analizaron los tipos de mensajes intercambiados entre routers. **OSPF** utiliza cinco tipos de paquetes principales: _Hello_, _Database Description_ (**DBD**), _Link-State Request_ (**LSR**), _Link-State Update_ (**LSU**) y _Link-State Acknowledgment_ (**LSAck**).
+
+Se utilizó el modo de simulación paso a paso, para identificar los distintos mensajes intercambiados por el protocolo **OSPF**, entre routers.
+
+<p align="center">
+      <img src="./img/TPN3_OSPF_Simulation.PNG"><br>
+      <em>Figura 7: Simulacion para los mensajes OSPF.</em>
+</p>
+
+Se observó especialmente el intercambio de paquetes _Hello_, que permiten formar y mantener las adyacencias entre routers **OSPF**. También se visualizaron los paquetes **LSU**, que contienen información sobre los cambios de estado de enlaces en la red, fundamentales para mantener actualizadas las bases de datos **LSDB**.
+
+El paquete _Hello_ es el primer tipo de paquete que intercambian los routers, ya que sirve para detectar vecinos en la misma red, verificar la compatibilidad de los parámetros y mantener la adyacencia activa.
+
+<p align="center">
+      <img src="./img/TPN3_OSPF_Hello.PNG"><br>
+      <em>Figura 8: Paquete Hello en R4.</em>
+</p>
+
+El paquete _Link-State Update_ contiene la información sobre los enlaces de red que conoce un router. Se utiliza para actualizar la **LSDB** de los vecinos.
+
+<p align="center">
+      <img src="./img/TPN3_OSPF_LSU.PNG"><br>
+      <em>Figura 9: Paquete LSU.</em>
+</p>
+
+El paquete _Link-State Acknowledgment_ es el que se envia para confirmar que se recibio el LSU correctamente. **OSPF** es confiable, pero al estar sobre **IP**, que no lo es, necesita asegurarse de que los **LSA** no se pierdan.
+
+<p align="center">
+      <img src="./img/TPN3_OSPF_ACK.PNG"><br>
+      <em>Figura 10: Paquete ACK.</em>
+</p>
+
+Mediante estos mensajes, los routers construyen la **LSDB**, consistente en toda el área **OSPF**, permitiendo a cada uno calcular rutas óptimas con el algoritmo de Dijkstra.
 
 5)  
-HACER Configurar los routers para:
-    a) Notificar las redes conectadas directamente al router.
-    b) Leer las entradas de la Base de Datos de Estado de Enlace (LSDB) en cada uno de los routers.
+    1)  En cada router se configuró **OSPF** para anunciar sus redes directamente conectadas. Esto se logró usando el comando network dentro del proceso **OSPF**. De esta manera, los routers pueden compartir sus enlaces con el resto de la red, permitiendo la creación de rutas dinámicas, como se pued observar en la _Figura 4_.
+
+
+    2)  Se utilizó el comando ``show ip ospf database`` para acceder al contenido de la **LSDB** en cada router. Esta contiene información sobre todos los routers y redes conocidas dentro del área **OSPF**, lo que permite que cada router construya su mapa de la red y calcule la ruta óptima.
+
+    Lo que observamos a continuación es antes de la definición de las áreas de OSPF en A y B:
+
+    <p align="center">
+      <img src="./img/TPN3_OSPF_DB.PNG"><br>
+      <em>Figura 11: Comando de database en R1 previo a la separación de áreas.</em>
+    </p>
+
+    Más adelante, veremos el mismo comando, pero con la separación de las áreas propiamente hechas.
 
 6)  
-HACER Definir las áreas de OSPF de la siguiente manera: R1 y R2 están en el área A, el resto de los routers estarán en el área B. Leer las entradas LSDB en cada uno de los routers.
+Se definieron dos áreas en la red **OSPF**:
+- Área A: conformada por los routers R1 y R2
+- Área B: conformada por los routers R3, R4 y R5
+
+A continuación, modificamos la configuración del proceso previo de **OSPF** en cada router para que las interfaces pertenecieran a la área correcta. Esto permite segmentar la red **OSPF** y escalar la red de forma eficiente.
+
+<p align="center">
+  <img src="./img/TPN3_OSPF_r2_area1.PNG"><br>
+  <em>Figura 12: Configuración para área 1.</em>
+</p>
+
+<p align="center">
+  <img src="./img/TPN3_OSPF_r3_area1_area2.PNG"><br>
+  <em>Figura 13: Configuración para área 1 y área 2.</em>
+</p>
+
+<p align="center">
+  <img src="./img/TPN3_OSPF_r4_area2.PNG"><br>
+  <em>Figura 14: Configuración para área 2.</em>
+</p>
+
+Se configuró un enlace virtual entre R1 y R3 para conectar el área 1 con el backbone OSPF (área 0). Aunque el comando ``show ip ospf virtual-links`` no mostró salida en Packet Tracer (por limitaciones del simulador), la funcionalidad del enlace fue verificada mediante el comando ``show ip ospf database``. En R1 se observan LSAs correspondientes a routers de otras áreas, lo que confirma que el backbone es accesible y que el virtual-link está funcionando correctamente.
+
+<p align="center">
+  <img src="./img/TPN3_OSPF_DB_area1.PNG"><br>
+  <em>Figura 15: Comando de database en R1 posterior a la separación de las áreas.</em>
+</p>
+
    
 7)  
 HACER Verificar el funcionamiento de OSPF:
@@ -183,10 +252,10 @@ HACER Redistribuir una ruta OSPF predeterminada:
     b) Configurar una ruta estática predeterminada en el router R1.
     c) Incluir la ruta estática predeterminada en las actualizaciones de OSPF enviadas desde el router R1.
 
-10)  
+10)   
 HACER Explicar el impacto en toda la red si se cae una interfaz del router R2 (R2 - R1, R2 - R3, R2 - S1).
     
-11)  
+11)   
 HACER ¿La tabla RIB (Routing Information Base) es lo mismo que la tabla FIB (Forwarding Information Base)? Justificar con capturas del práctico.
 
 
