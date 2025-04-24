@@ -76,19 +76,85 @@ En cuanto al direccionamiento **IP**, **OSPF** opera sobre redes **IP** dividida
 Cada tipo tiene implicancias sobre cómo se detectan los vecinos y cómo se elige el router designado (**DR**).
    
 1)  
-En este esquema de direccionamiento, hemos seleccionado la red ``10.0.0.0/8`` (Clase A) para la **LAN** de hosts porque su amplio espacio de direcciones (más de 16 millones de direcciones útiles) permite un crecimiento futuro sin necesidad de renumerar subredes; además, al usar la máscara por defecto simplificamos la configuración inicial de los dispositivos. 
+En este esquema de direccionamiento, hemos seleccionado la red ``10.0.0.0/8`` (Clase A) para la **LAN** de hosts conectados al switch 1 porque su amplio espacio de direcciones (más de 16 millones de direcciones útiles) permite un crecimiento futuro sin necesidad de re enumerar subredes; además, al usar la máscara por defecto simplificamos la configuración inicial de los dispositivos. 
 
-Por otro lado, para el enlace punto a punto entre routers elegimos la subred ``192.168.1.0/24`` (Clase C) con máscara ``255.255.255.0``, ya que una red que solo requiere dos direcciones efectivas no justifica desperdiciar un rango grande de direcciones. Esta segmentación de la Clase A para LAN de usuarios y la Clase C para interconexiones de routers minimiza el desperdicio de espacio de direcciones y mantiene las tablas de enrutamiento claras y escalables.
+Para diferenciar las redes en las otras redes de hosts se usarán las redes clase B ``172.16.0.0/16`` y ``172.17.0.0/16``
+
+Por otro lado, para los enlaces punto a punto entre routers usamos redes clase C de la ``192.168.1.0/24`` a la ``192.168.6.0/24``, ya que una red que solo requiere dos direcciones efectivas no justifica desperdiciar un rango grande de direcciones. Esta segmentación de la Clases A y B para LAN de usuarios y la Clase C para interconexiones de routers minimiza el desperdicio de espacio de direcciones y mantiene las tablas de enrutamiento claras y escalables.
 
 | Dispositivo | Interfaz | IP | Máscara | Red |
 | --- | --- | --- | --- | --- |
-| R1 | G0/0 | 192.168.1.1 | 255.255.255.0 | 192.168.1.0 |
-| R2 | G0/0 | 192.168.1.2 | 255.255.255.0 | 192.168.1.0 |
-| R1 | Loopback0 | 10.0.0.1 | 255.0.0.0 | 10.0.0.0 |
-| PC1 | NIC | 10.0.0.2 | 255.0.0.0 | 10.0.0.0 |
+| PC1 | F0 | 10.0.0.2 | 255.0.0.0 | 10.0.0.0 |
+| PC2 | F0 | 10.0.0.3 | 255.0.0.0 | 10.0.0.0 |
+| PC3 | F0 | 10.0.0.4 | 255.0.0.0 | 10.0.0.0 |
+| PC4 | F0 | 172.17.0.2 | 255.0.0.0 | 172.17.0.0 |
+| PC5 | F0 | 172.16.0.2 | 255.0.0.0 | 172.16.0.0 |
+| R1 | Loopback0 | 1.1.1.1 | 255.255.255.255 | 1.1.1.1 |
+| R1 | G0/0 | 192.168.1.2 | 255.255.255.0 | 192.168.1.0 |
+| R1 | G0/1 | 192.168.3.2 | 255.255.255.0 | 192.168.3.0 |
+| R2 | G0/0 | 10.0.0.1 | 255.0.0.0 | 10.0.0.0 |
+| R2 | G0/1 | 192.168.1.1 | 255.255.255.0 | 192.168.1.0 |
+| R2 | G0/2 | 192.168.2.1 | 255.255.255.0 | 192.168.2.0 |
+| R3 | G0/0 | 192.168.2.2 | 255.255.255.0 | 192.168.2.0 |
+| R3 | G0/1 | 192.168.3.1 | 255.255.255.0 | 192.168.3.0 |
+| R3 | G0/2 | 192.168.4.1 | 255.255.255.0 | 192.168.4.0 |
+| R3 | G0/1/0 | 192.168.5.1 | 255.255.255.0 | 192.168.5.0 |
+| R4 | G0/0 | 192.168.6.1 | 255.255.255.0 | 192.168.6.0 |
+| R5 | G0/2 | 172.17.0.1 | 255.255.0.0 | 172.17.0.0 |
+| R4 | G0/1/0 | 192.168.5.2 | 255.255.255.0 | 192.168.5.0 |
+| R5 | G0/0 | 192.168.4.2 | 255.255.255.0 | 192.168.4.0 |
+| R5 | G0/1 | 172.16.0.1 | 255.255.0.0 | 172.16.0.0 |
+| R5 | G0/2 | 192.168.6.2 | 255.255.255.0 | 192.168.6.0 |
+
+<p align="center">
+      <img src="./img/TPN3_red.png"><br>
+      <em>Figura 1: Diagrama de la red.</em>
+  </p>
 
 3)  
-HACER Configurar cada router para que utilice el protocolo OSPF y verificar la conexión punto a punto entre los dispositivos enlazados. Verificar que las tablas de enrutamiento contienen rutas OSPF.
+Para configurar los routers para utilizar OSPF lo primero a realizar es configurar las direcciones IP de cada puerto. Por ejemplo con el router R2 hacemos:
+
+<p align="center">
+      <img src="./img/TPN3_R2_ipconfig.png"><br>
+      <em>Figura 2: Configuración IP router R2.</em>
+  </p>
+
+Lo mismo se hace con los demás routers. En particular en el router R1 hay que configurar una interfaz de loopback, esto se realiza de la misma manera que con las demás interfaces pero indicando el nombre de interfaz Loopback0
+
+<p align="center">
+      <img src="./img/TPN3_r1_loopback.PNG"><br>
+      <em>Figura 3: Configuración IP router R1 loopback.</em>
+  </p>
+
+Ahora si, para configurar los routers para utilizar OSPF debemos ingresar a la configuración de ospf del router con el comando
+
+```
+config terminal
+router ospf 1
+```
+
+Una vez ingresamos a la configuración de OSPF debemos habilitar ruteo en las redes que se encuentran conectadas a cada router con el comando ``network`` seguido de la red, la "*OSPF wild card*" (que es la máscara de subred con los bits invertidos), y un area que puede ser indicada con un valor decimal o una dirección IP. Por el momento colocamos todas las areas en 0.
+
+<p align="center">
+      <img src="./img/TPN3_R2_ospfconfig.png"><br>
+      <em>Figura 4: Configuración OSPF router R2.</em>
+  </p>
+
+Una vez repetimos este proceso en cada router podemos verificar el funcionamiento correcto haciendo un ping desde un host en una red a un host en otra red.
+
+<p align="center">
+      <img src="./img/TPN3_ping_PC3_PC4.png"><br>
+      <em>Figura 5: Ping desde PC3 (10.0.0.4) a PC4 (172.17.0.2).</em>
+  </p>
+
+Podemos ademas verificar que las rutas son OSPF verificando las tablas de enrutamiento en los routers.
+
+<p align="center">
+      <img src="./img/TPN3_R3_tabla_de_ruteo.png"><br>
+      <em>Figura 6: Tabla de ruteo Router R3.</em>
+  </p>
+
+La letra O al inicio de cada linea indica que es una ruta OSPF (Como lo indica la sección *Codes* al inicio del mensaje).
 
 4)  
 HACER Identificar y analizar los mensajes de OSPF para comprender su funcionamiento y su impacto en la red.
