@@ -237,26 +237,166 @@ Se configuró un enlace virtual entre R1 y R3 para conectar el área 1 con el ba
 
    
 7)  
-HACER Verificar el funcionamiento de OSPF:
-    a) En el router R2 consultar la información acerca de los vecinos R1 y R3 de OSPF.
-    b) En el router R2 consultar la información sobre las operaciones del protocolo de enrutamiento.
+  a) Al ejecutar el comando `show ip ospf neighbor` en el router R2 obtuvimos lo siguiente:
+    <p align="center">
+      <img src="./img/show_ip_ospf_neighbor.png"><br>
+      <em>Figura 16: Resultado del comando.</em>
+  </p>
 
+b) Para consultar por informacion sobre las operaciones del protocolo de enrutamiento utilizamos los comandos `show ip ospf`, `show ip ospf interface brief` y `show ip protocols`:
+
+    
+<p align="center">
+      <img src="./img/show_ip_ospf.png"><br>
+      <em>Figura 17: Resultado de show ip ospf.</em>
+  </p>
+
+Al ejecutar este comando, observamos lo mismo que al ejecutar el comando de la consigna anterior:
+- **Process**: Identificador local del proceso OSPF (útil si el router corre varios).  
+- **Router ID**: IP virtual que singulariza al router dentro del dominio OSPF.  
+- **Áreas**: Número y tipo de áreas OSPF en las que participa este router.  
+- **SPF ejecuciones**: Veces que el algoritmo de shortest-path (Dijkstra) se ha calculado.  
+- **LSA totales (tipo 1)**: Cantidad de Link-State Advertisements internas generadas por este router.  
+- **External LSA**: Rutas externas (redistribuidas de otros protocolos) que ha visto este área.  
+- **Soporta Opaque LSA**: Indica si se usan LSAs “opaques” para extensiones (por ej. MPLS).  
+- **SPF schedule delay**: Tiempo de espera antes de disparar un nuevo cálculo SPF tras un cambio.  
+- **Hold time between two SPFs**: Mínimo intervalo entre dos ejecuciones consecutivas de SPF.  
+- **Minimum LSA interval**: Tiempo mínimo entre envíos de una misma LSA por el mismo router.  
+- **Minimum LSA arrival**: Tiempo mínimo que espera el router antes de procesar LSAs entrantes.  
+- **Flood list length**: Número de LSAs pendientes de flooding en este router.
+
+<p align="center">
+      <img src="./img/show_ip_ospf_interface_brief.png"><br>
+      <em>Figura 18: Resultado de show ip ospf interface brief.</em>
+   </p>
+
+Aqui podemos osbervar lo siguinte:
+- **Interfaz**: Nombre del puerto físico o lógico del router.  
+- **Área**: Área OSPF a la que pertenece esa interfaz.  
+- **IP / Máscara**: Dirección y prefijo usado en ese enlace OSPF.  
+- **Cost**: Costo OSPF de la interfaz (inverso a ancho de banda).  
+- **Estado**: Rol en la elección de DR/BDR en redes multiacceso (DR, BDR o “–”).  
+- **Vecinos**: Cantidad de adyacencias OSPF formadas sobre esa interfaz.
+
+
+<p align="center">
+      <img src="./img/show_ip_protocols.png"><br>
+      <em>Figura 19: Resultado de show ip protocols.</em>
+  </p>
+  
+  Por ultimo aqui observamos:
+  - **Routing Protocol**: Protocolo de enrutamiento activo (aquí OSPF).  
+- **Router ID**: Mismo ID de proceso OSPF mostrado en `show ip ospf`.  
+- **Áreas**: Listado de áreas en que el router participa.  
+- **Redes anunciadas**: Subredes que este router inyecta en OSPF (directamente conectadas).  
+- **Maximum path**: Número máximo de rutas equivalentes instalables en la RIB/FIB.  
+- **Distance (AD)**: Distancia administrativa usada para OSPF (por defecto 110).  
+- **Fuentes de información**: Direcciones de vecinos de los cuales se reciben actualizaciones.
+  
 8)  
 HACER Configurar el costo de OSPF:
     a) Modificar los costos de las rutas OSPF para observar cómo afecta el funcionamiento del protocolo.
-    b) Realizar pruebas entre los clientes de los diferentes routers utilizando traceroute antes y después de la modificación para verificar el funcionamiento.
+ 
+a) Primero vemos el costo por defecto que viene configurado en el router 3 :
+<p align="center">
+      <img src="./img/Imagen_sin_aumento_costo.png"><br>
+      <em>Figura 19: Resultado de show ip protocols.</em>
+  </p>
+  
+  Aqui observamos que el valor por default es 1.
+Mediante el comando `ip osp cost` modificamos el valor del costo y lo seteamos en 100
+ 
+ <p align="center">
+      <img src="./img/Imagen_CON_aumento_costo.png"><br>
+      <em>Figura 20: Resultado de show ip protocols.</em>
+  </p>
+
+
+
+ b) Realizar pruebas entre los clientes de los diferentes routers utilizando traceroute antes y después de la modificación para verificar el funcionamiento.
+
 
 9)  
 HACER Redistribuir una ruta OSPF predeterminada:
     a) Configurar una dirección de loopback en R1 para simular un enlace a un proveedor de servicios de Internet (ISP).
-    b) Configurar una ruta estática predeterminada en el router R1.
-    c) Incluir la ruta estática predeterminada en las actualizaciones de OSPF enviadas desde el router R1.
+a) 
+ <p align="center">
+      <img src="./img/Config_Loopback_R1.png"><br>
+      <em>Figura .: Configuracion de loopback en R1.</em>
+  </p>
 
-10)   
-HACER Explicar el impacto en toda la red si se cae una interfaz del router R2 (R2 - R1, R2 - R3, R2 - S1).
+
+b) Configurar una ruta estática predeterminada en el router R1.
+c) Incluir la ruta estática predeterminada en las actualizaciones de OSPF enviadas desde el router R1.
+
+10)  
+#### *Caso R2 - R1*
+- **Qué falla**  
+  R2 pierde su adyacencia OSPF con R1.
+
+- **Efecto inmediato**  
+  - R2 deja de aprender las redes que anuncia R1 (loopback 1.1.1.1/32 y la ruta por defecto).  
+  - R1 deja de recibir las redes detrás de R2 (10.0.0.0/24, 172.16.0.0/24, 172.17.0.0/24…).
+
+- **Ruta por defecto “a Internet”**  
+  Si era R1 quien originaba la default en OSPF, R2 (y todos los routers aguas abajo) **pierden conectividad a Internet** simulada.
+
+- **Redundancia**  
+  No existe ruta alternativa entre R2 y R1. Toda la porción “norte” queda inaccesible.
+
+#### *Caso R2 - R3*
+- **Qué falla**  
+  R2 queda completamente **aislado** del resto de la topología.
+
+- **Efecto inmediato**  
+  - Las subredes “sureñas” (172.16.0.0, 172.17.0.0) y “medias” (192.168.3.0, 4.0, 5.0, 6.0) no son alcanzables desde la LAN 10.0.0.0.  
+  - R3 detecta la pérdida de adyacencia en `show ip ospf neighbor`.
+
+- **Impacto en hosts**  
+  PC1/PC2/PC3 solo podrán comunicarse localmente; no llegarán a PC4/PC5 ni al “ISP” de R1.
+
+- **Restauración**  
+  Sólo un camino alternativo o reconfiguración de OSPF podría reconectar R2 a R3.
+
+#### *Caso R2 - S1*
+- **Qué falla**  
+  La interfaz de R2 hacia PC1/PC2/PC3 cae.
+
+- **Efecto inmediato**  
+  Únicamente los hosts PC1/PC2/PC3 pierden conectividad (local y remota).  
+  R2 mantiene sus adyacencias OSPF con R1 y R3, por lo que el resto de la red sigue operativa.
+
+- **Impacto global**  
+  Ninguna otra subred se ve afectada.
+
+- **Recuperación**  
+  Restaurar el enlace físico o reactivar la interfaz FastEthernet en R2.
     
-11)   
+11)  
 HACER ¿La tabla RIB (Routing Information Base) es lo mismo que la tabla FIB (Forwarding Information Base)? Justificar con capturas del práctico.
+No, la **RIB** (Routing Information Base) y la **FIB** (Forwarding Information Base) **no** son lo mismo. A continuación te lo explico y lo justifico con ejemplos prácticos de Packet Tracer.
+
+---
+
+### 1. Definiciones
+
+| Acrónimo | Nombre completo               | Descripción                                                                                                                                           |
+|----------|-------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **RIB**  | Routing Information Base      | *Tabla de enrutamiento* que reúne todas las rutas aprendidas (OSPF, estáticas, directas, EIGRP, BGP…) y elige la mejor según la métrica.               |
+| **FIB**  | Forwarding Information Base   | *Tabla de reenvío* que el dataplane utiliza para tomar decisiones de reenvío de paquetes; es una versión optimizada de la RIB (normalmente CEF).      |
+
+- La **RIB** existe en el **control plane** (CPU) y se construye con `show ip route`.  
+- La **FIB** vive en el **forwarding plane** (hardware o CEF), y se ve con `show ip cef`.
+
+---
+ <p align="center">
+      <img src="./img/RIB.png"><br>
+      <em>Figura .: Captura de RIB.</em>
+  </p>
+ <p align="center">
+      <img src="./img/FIB.png"><br>
+      <em>Figura .: Captura de FIB.</em>
+  </p>
 
 
 ## Resultados
