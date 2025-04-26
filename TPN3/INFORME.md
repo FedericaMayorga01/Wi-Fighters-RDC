@@ -208,31 +208,43 @@ Mediante estos mensajes, los routers construyen la **LSDB**, consistente en toda
 
 6)  
 Se definieron dos áreas en la red **OSPF**:
-- Área A: conformada por los routers R1 y R2
-- Área B: conformada por los routers R3, R4 y R5
+- Área 1: conformada por los routers R1 y R2
+- Área 2: conformada por los routers R3, R4 y R5
+
+Además para poder comunicar las áreas en necesario que exista una conexión de área 0, para ello utilizamos la conexión entre R1 y R3, es decir la red 192.168.3.0.
 
 A continuación, modificamos la configuración del proceso previo de **OSPF** en cada router para que las interfaces pertenecieran a la área correcta. Esto permite segmentar la red **OSPF** y escalar la red de forma eficiente.
 
 <p align="center">
+  <img src="./img/TPN3_OSPF_r1_area1_area0.PNG"><br>
+  <em>Figura 12: Configuración para router 1.</em>
+</p>
+
+<p align="center">
   <img src="./img/TPN3_OSPF_r2_area1.PNG"><br>
-  <em>Figura 12: Configuración para área 1.</em>
+  <em>Figura 13: Configuración para router 2.</em>
 </p>
 
 <p align="center">
   <img src="./img/TPN3_OSPF_r3_area1_area2.PNG"><br>
-  <em>Figura 13: Configuración para área 1 y área 2.</em>
+  <em>Figura 14: Configuración para router 3.</em>
 </p>
 
 <p align="center">
   <img src="./img/TPN3_OSPF_r4_area2.PNG"><br>
-  <em>Figura 14: Configuración para área 2.</em>
+  <em>Figura 15: Configuración para router 4.</em>
 </p>
 
-Se configuró un enlace virtual entre R1 y R3 para conectar el área 1 con el backbone OSPF (área 0). Aunque el comando ``show ip ospf virtual-links`` no mostró salida en Packet Tracer (por limitaciones del simulador), la funcionalidad del enlace fue verificada mediante el comando ``show ip ospf database``. En R1 se observan LSAs correspondientes a routers de otras áreas, lo que confirma que el backbone es accesible y que el virtual-link está funcionando correctamente.
+<p align="center">
+  <img src="./img/TPN3_OSPF_r5_area2.png"><br>
+  <em>Figura 16: Configuración para router 5.</em>
+</p>
+
+Aunque el comando ``show ip ospf virtual-links`` no mostró salida en Packet Tracer (por limitaciones del simulador), la funcionalidad del enlace fue verificada mediante el comando ``show ip ospf database``. En R1 se observan LSAs correspondientes a routers de otras áreas, lo que confirma que el backbone es accesible y que el virtual-link está funcionando correctamente.
 
 <p align="center">
   <img src="./img/TPN3_OSPF_DB_area1.PNG"><br>
-  <em>Figura 15: Comando de database en R1 posterior a la separación de las áreas.</em>
+  <em>Figura 17: Comando de database en R1 posterior a la separación de las áreas.</em>
 </p>
 
    
@@ -240,7 +252,7 @@ Se configuró un enlace virtual entre R1 y R3 para conectar el área 1 con el ba
   a) Al ejecutar el comando `show ip ospf neighbor` en el router R2 obtuvimos lo siguiente:
     <p align="center">
       <img src="./img/show_ip_ospf_neighbor.png"><br>
-      <em>Figura 16: Resultado del comando.</em>
+      <em>Figura 18: Resultado del comando.</em>
   </p>
 
 b) Para consultar por informacion sobre las operaciones del protocolo de enrutamiento utilizamos los comandos `show ip ospf`, `show ip ospf interface brief` y `show ip protocols`:
@@ -248,7 +260,7 @@ b) Para consultar por informacion sobre las operaciones del protocolo de enrutam
     
 <p align="center">
       <img src="./img/show_ip_ospf.png"><br>
-      <em>Figura 17: Resultado de show ip ospf.</em>
+      <em>Figura 19: Resultado de show ip ospf.</em>
   </p>
 
 Al ejecutar este comando, observamos lo mismo que al ejecutar el comando de la consigna anterior:
@@ -267,7 +279,7 @@ Al ejecutar este comando, observamos lo mismo que al ejecutar el comando de la c
 
 <p align="center">
       <img src="./img/show_ip_ospf_interface_brief.png"><br>
-      <em>Figura 18: Resultado de show ip ospf interface brief.</em>
+      <em>Figura 20: Resultado de show ip ospf interface brief.</em>
    </p>
 
 Aqui podemos osbervar lo siguinte:
@@ -281,7 +293,7 @@ Aqui podemos osbervar lo siguinte:
 
 <p align="center">
       <img src="./img/show_ip_protocols.png"><br>
-      <em>Figura 19: Resultado de show ip protocols.</em>
+      <em>Figura 21: Resultado de show ip protocols.</em>
   </p>
   
   Por ultimo aqui observamos:
@@ -300,7 +312,7 @@ HACER Configurar el costo de OSPF:
 a) Primero vemos el costo por defecto que viene configurado en el router 3 :
 <p align="center">
       <img src="./img/Imagen_sin_aumento_costo.png"><br>
-      <em>Figura 19: Resultado de show ip protocols.</em>
+      <em>Figura 22: Resultado de show ip protocols.</em>
   </p>
   
   Aqui observamos que el valor por default es 1.
@@ -308,7 +320,7 @@ Mediante el comando `ip osp cost` modificamos el valor del costo y lo seteamos e
  
  <p align="center">
       <img src="./img/Imagen_CON_aumento_costo.png"><br>
-      <em>Figura 20: Resultado de show ip protocols.</em>
+      <em>Figura 23: Resultado de show ip protocols.</em>
   </p>
 
 
