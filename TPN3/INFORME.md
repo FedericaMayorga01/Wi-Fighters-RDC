@@ -1,3 +1,5 @@
+
+
 # Trabajo Práctico N°3
 # Performance de redes y ruteo interno dinámico.
 
@@ -247,7 +249,7 @@ Aunque el comando ``show ip ospf virtual-links`` no mostró salida en Packet Tra
   <em>Figura 17: Comando de database en R1 posterior a la separación de las áreas.</em>
 </p>
 
-   
+---   
 7)  
   a) Al ejecutar el comando `show ip ospf neighbor` en el router R2 obtuvimos lo siguiente:
     <p align="center">
@@ -304,42 +306,82 @@ Aqui podemos osbervar lo siguinte:
 - **Maximum path**: Número máximo de rutas equivalentes instalables en la RIB/FIB.  
 - **Distance (AD)**: Distancia administrativa usada para OSPF (por defecto 110).  
 - **Fuentes de información**: Direcciones de vecinos de los cuales se reciben actualizaciones.
-  
+---
 8)  
-HACER Configurar el costo de OSPF:
-    a) Modificar los costos de las rutas OSPF para observar cómo afecta el funcionamiento del protocolo.
- 
-a) Primero vemos el costo por defecto que viene configurado en el router 3 :
+a) Primero vemos el costo por defecto que viene configurado en el router 3, desde el router 2 :
 <p align="center">
       <img src="./img/Imagen_sin_aumento_costo.png"><br>
-      <em>Figura 22: Resultado de show ip protocols.</em>
+      <em>Figura 22: Costo predefinido.</em>
   </p>
   
   Aqui observamos que el valor por default es 1.
-Mediante el comando `ip osp cost` modificamos el valor del costo y lo seteamos en 100
+Mediante el comando `ip osp cost` modificamos el valor del costo y lo seteamos en 20
  
  <p align="center">
       <img src="./img/Imagen_CON_aumento_costo.png"><br>
-      <em>Figura 23: Resultado de show ip protocols.</em>
+      <em>Figura 23: Aumento de costo ospf.</em>
   </p>
 
 
+ b) Ahora analizaremos la ruta que sigue el paquete cuando se envia sin modificar el costo
+ <p align="center">
+      <img src="./img/Ruta_original.png"><br>
+      <em>Figura 24: Ruta original.</em>
+  </p>
+ Aqui observamos que el paquete sigue la ruta R2->R3->R4 hasta llegar a la PC4
+  
+Ahora ,una vez aumentado el costo de la ruta R2->R3, observamos que ahora el paquete decide hacer la ruta R2->R1->R3, debido a que el costo R1->R3 es 1 (y no 20 como se lo seteo a R2->R3).
 
- b) Realizar pruebas entre los clientes de los diferentes routers utilizando traceroute antes y después de la modificación para verificar el funcionamiento.
+ <p align="center">
+      <img src="./img/Ruta_modificada.png"><br>
+      <em>Figura 25: Ruta modificada.</em>
+  </p>
 
+---
 
 9)  
-HACER Redistribuir una ruta OSPF predeterminada:
-    a) Configurar una dirección de loopback en R1 para simular un enlace a un proveedor de servicios de Internet (ISP).
-a) 
+a)  La configuracion del Loopback en R1 se hace de la siguiente manera
  <p align="center">
       <img src="./img/Config_Loopback_R1.png"><br>
-      <em>Figura .: Configuracion de loopback en R1.</em>
+      <em>Figura 26: Configuracion de loopback en R1.</em>
+  </p>
+Esto nos permite representará la “Internet” o el ISP al que R1 está conectado.
+
+
+b) Ahora configuramos una ruta estatica predeterminada en el router R1.
+
+ <p align="center">
+      <img src="./img/Configuracion_ruta_estatica_en_loopback.png"><br>
+      <em>Figura 27: Configuracion de ruta estatica.</em>
   </p>
 
+c) Como siguiente paso debemos incluir la Ruta Estática en las Actualizaciones OSPF
 
-b) Configurar una ruta estática predeterminada en el router R1.
-c) Incluir la ruta estática predeterminada en las actualizaciones de OSPF enviadas desde el router R1.
+ <p align="center">
+      <img src="./img/Ruta_Estática_en_las_Actualizaciones_OSPF.png"><br>
+      <em></em>
+  </p>
+ <p align="center">
+      <img src="./img/Ruta_Estática_en_las_Actualizaciones_OSPF(1).png"><br>
+      <em>Figura 28: Inclusion de la ruta estatica.</em>
+  </p>
+  
+A modo de comprobacion, revisamos que se haya aprendido la ruta por defecto que establecimos
+
+ <p align="center">
+      <img src="./img/Chequeo_ruta_establecida_desde_R2.png"><br>
+      <em>Figura 29: Chequeo de ruta establecida.</em>
+  </p>
+Observamos que el enrutamiento se hace atravez de 192.168.1.2 (la IP de R1)
+
+Tambien a la hora de tratar de enviar un paquete a una IP inexcistente, vemos que desde R2 automaticamente trata de pasar por R1, y no por R3
+
+ <p align="center">
+      <img src="./img/Chequeo_ruta_establecida_desde_R2(1).png"><br>
+      <em>Figura 30: Tracert a IP inexistente.</em>
+  </p>
+
+---
 
 10)  
 #### *Caso R2 - R1*
@@ -384,13 +426,10 @@ c) Incluir la ruta estática predeterminada en las actualizaciones de OSPF envia
 - **Recuperación**  
   Restaurar el enlace físico o reactivar la interfaz FastEthernet en R2.
     
-11)  
-HACER ¿La tabla RIB (Routing Information Base) es lo mismo que la tabla FIB (Forwarding Information Base)? Justificar con capturas del práctico.
-No, la **RIB** (Routing Information Base) y la **FIB** (Forwarding Information Base) **no** son lo mismo. A continuación te lo explico y lo justifico con ejemplos prácticos de Packet Tracer.
-
 ---
+11)  
+La **RIB** (Routing Information Base) y la **FIB** (Forwarding Information Base) **no** son lo mismo. A continuación presentamos una explicacion breve de cada una.
 
-### 1. Definiciones
 
 | Acrónimo | Nombre completo               | Descripción                                                                                                                                           |
 |----------|-------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -400,14 +439,13 @@ No, la **RIB** (Routing Information Base) y la **FIB** (Forwarding Information B
 - La **RIB** existe en el **control plane** (CPU) y se construye con `show ip route`.  
 - La **FIB** vive en el **forwarding plane** (hardware o CEF), y se ve con `show ip cef`.
 
----
  <p align="center">
       <img src="./img/RIB.png"><br>
-      <em>Figura .: Captura de RIB.</em>
+      <em>Figura 31: Captura de RIB.</em>
   </p>
  <p align="center">
       <img src="./img/FIB.png"><br>
-      <em>Figura .: Captura de FIB.</em>
+      <em>Figura 32: Captura de FIB.</em>
   </p>
 
 
