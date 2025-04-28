@@ -451,14 +451,27 @@ La **RIB** (Routing Information Base) y la **FIB** (Forwarding Information Base)
 
 ## Resultados
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Luego de realizar el trabajo pudimos obtener distintos resutlados entendiendo el uso y aplicacion de todas las herramientas que nos dieron. A continuacion desarrollamos algunos de los resultados obtenidos.
+
+         Armamos toda la topología en Packet Tracer y, apenas levantamos OSPF, los routers hicieron ping entre ellos sin problemas.
+
+         Hicimos pings cruzados entre hosts de distintas subredes (por ejemplo, PC3 → PC4), lo que indica que las rutas OSPF se aprendieron y propagaron bien.
+
+         Cuando segmentamos la red en Área 1 (R1-R2), Área 2 (R3-R4-R5) y Área 0, el “virtual-link” entre R1 y R3 recorrió la red sin caerse, dejando pasar tráfico inter-áreas.
+
+         Al subir el costo de la interfaz R2–R3 de 1 a 20, notamos que el tráfico cambió de ruta (R2→R3→R4 pasó a R2→R1→R3).
+
+         En los tests de fallo, al desconectar R2–R1, R2 perdió conectividad con el “ISP” y ciertas subredes; al desconectar R2–switch, solo los hosts locales de R2 quedaron aislados, el resto siguió trabajando
 
 
 ## Discusión y conclusiones
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+En este TP pusimos en práctica OSPF desde cero: arrancamos con la configuración de IP, activamos OSPF, y fuimos viendo adyacencias y LSDBs para entender bien cómo funciona por dentro. Separar la red en áreas demostró ser útil para contener el tráfico de control y hacer más rápido el SPF en cada zona. También vimos que ajustar costos es una manera muy directa de “forzar” rutas alternativas, lo cual puede servir si queremos balancear carga o evitar segmentos congestionados.
 
-## Referencias
+Los fallos de enlace dejaron en claro la importancia de tener caminos redundantes: sin un enlace alternativo entre R2 y R1, toda la otra parte se queda afuera. 
+
+En definitiva y luego de investigar e informarnos mas sobre el tema podemos decir que este práctico nos dio confianza para manejar OSPF en redes reales: desde la teoría hasta la configuración, el diagnóstico y la optimización de métricas.
+
+
 
 [1] TITULO [AUTORES](LINK)
