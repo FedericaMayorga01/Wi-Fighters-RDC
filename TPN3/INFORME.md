@@ -1,5 +1,3 @@
-
-
 # Trabajo Práctico N°3
 # Performance de redes y ruteo interno dinámico.
 
@@ -471,7 +469,3 @@ En este TP pusimos en práctica OSPF desde cero: arrancamos con la configuració
 Los fallos de enlace dejaron en claro la importancia de tener caminos redundantes: sin un enlace alternativo entre R2 y R1, toda la otra parte se queda afuera. 
 
 En definitiva y luego de investigar e informarnos mas sobre el tema podemos decir que este práctico nos dio confianza para manejar OSPF en redes reales: desde la teoría hasta la configuración, el diagnóstico y la optimización de métricas.
-
-
-
-[1] TITULO [AUTORES](LINK)
