@@ -162,25 +162,25 @@ A continuación mostraremos los respectivos comandos y explicaremos lo que hacen
 
 show ip summary  
 <p align="center">
-       <img src="./img/0.PNG"><br>
+       <img src="./img/0.png"><br>
        <br/>
     </p>
     
 show ip bgp  
 <p align="center">
-       <img src="./img/1.PNG"><br>
+       <img src="./img/1.png"><br>
        <br/>
     </p>
     
 show ip route  
 <p align="center">
-       <img src="./img/2.PNG"><br>
+       <img src="./img/2.png"><br>
        <br/>
     </p>
 
 El fragmento que evidencia es   
 <p align="center">
-       <img src="./img/medio.PNG"><br>
+       <img src="./img/medio.png"><br>
        <br/>
     </p>
 
@@ -208,7 +208,7 @@ El tiempo `00:00:00` indica que esta ruta fue recibida recientemente.
 Para comprobar la conexión entre los AS, realizamos ping desde el Host 0 (PC0) al Host 2 (PC2)
 
 <p align="center">
-       <img src="./img/3.PNG"><br>
+       <img src="./img/3.png"><br>
        <br/>
     </p>
 
@@ -220,7 +220,7 @@ Router encendido
 
 Al realiza un ping desde el PC0 al PC3, con ambos routers encendidos, observamos como el paquete viaja a través de la red con normalidad
 <p align="center">
-       <img src="./img/4.PNG"><br>
+       <img src="./img/4.png"><br>
        <br/>
     </p>
 Router apagado
@@ -228,13 +228,13 @@ Router apagado
 Observamos como el paquete enviado desde PC0, llega al Router0, pero este no puede llegar al destino debido a que el Router1 fue apagado
 
 <p align="center">
-       <img src="./img/5.PNG"><br>
+       <img src="./img/5.png"><br>
        <br/>
     </p>
 Observando en el command prompt del PC0, se nos indica lo siguiente
 
 <p align="center">
-       <img src="./img/6.PNG"><br>
+       <img src="./img/6.png"><br>
        <br/>
     </p>
 
