@@ -1,4 +1,4 @@
-# Trabajo Práctico N°4
+![image](https://github.com/user-attachments/assets/46f1253f-d5f1-47e1-97f3-448eb6c5f1e8)# Trabajo Práctico N°4
 # Ruteo externo dinámico y sistemas autónomos.
 
 **Nombres**  
@@ -154,6 +154,104 @@ El primer apartado del trabajo lleva a comprender los fundamentos teóricos del 
 ## Parte II - Simulaciones y análisis  
 ## Introducción  
 En la segunda parte, se traslada el conocimiento teórico a una implementación práctica mediante la simulación de una red que interconecta múltiples sistemas autónomos utilizando BGP. Se emplea un entorno virtual, para construir la topología de red, verificar conectividad entre hosts, introducir configuraciones para IPv6 y realizar pruebas de redistribución de rutas con OSPF. Buscamos analizar el comportamiento del protocolo ante distintos eventos como caídas de routers o cambios en la topología, reforzando así la comprensión del funcionamiento de BGP en escenarios reales y dinámicos.
+
+
+1\)
+
+A continuación mostraremos los respectivos comandos y explicaremos lo que hacen cada uno.
+
+show ip summary  
+<p align="center">
+       <img src="./img/0.PNG"><br>
+       <br/>
+    </p>
+    
+show ip bgp  
+<p align="center">
+       <img src="./img/1.PNG"><br>
+       <br/>
+    </p>
+    
+show ip route  
+<p align="center">
+       <img src="./img/2.PNG"><br>
+       <br/>
+    </p>
+
+El fragmento que evidencia es   
+<p align="center">
+       <img src="./img/medio.PNG"><br>
+       <br/>
+    </p>
+
+Explicacion de la tabla de Ruteo se encuentra en la ultima captura de pantalla en el ultimo fragmento. Tenemos:
+
+#### **`C 10.0.0.0 is directly connected, FastEthernet0/0`**
+
+Esta línea indica que la red 10.0.0.0/24 está directamente conectada al router a través de la interfaz FastEthernet0/0. El prefijo `C` (Connected) señala que es una red local al router, accesible sin necesidad de ruteo adicional.
+
+#### **`C 192.168.1.0/24 is directly connected, FastEthernet0/1`**
+
+De forma similar a la anterior, esta entrada muestra que la red 192.168.1.0/24 también está directamente conectada al router, en este caso a través de la interfaz FastEthernet0/1. Probablemente sea la red donde está conectado un host local.
+
+#### **`B 192.168.2.0/24 [20/0] via 10.0.0.2, 00:00:00`**
+
+Esta línea representa una ruta aprendida mediante BGP (prefijo `B`). La red de destino es 192.168.2.0/24, y para alcanzarla el router debe reenviar el tráfico al siguiente salto, que es la dirección IP 10.0.0.2. El valor `[20/0]` indica:
+
+`20`: distancia administrativa por defecto para rutas aprendidas por BGP externo (eBGP).  
+`0`: métrica interna de la ruta.
+
+El tiempo `00:00:00` indica que esta ruta fue recibida recientemente.
+
+2\) 
+
+Para comprobar la conexión entre los AS, realizamos ping desde el Host 0 (PC0) al Host 2 (PC2)
+
+<p align="center">
+       <img src="./img/3.PNG"><br>
+       <br/>
+    </p>
+
+Vemos que efectivamente el ping es recibido correctamente, demostrando asi la conexión entre los AS
+
+3\)
+
+Router encendido
+
+Al realiza un ping desde el PC0 al PC3, con ambos routers encendidos, observamos como el paquete viaja a través de la red con normalidad
+<p align="center">
+       <img src="./img/4.PNG"><br>
+       <br/>
+    </p>
+Router apagado
+
+Observamos como el paquete enviado desde PC0, llega al Router0, pero este no puede llegar al destino debido a que el Router1 fue apagado
+
+<p align="center">
+       <img src="./img/5.PNG"><br>
+       <br/>
+    </p>
+Observando en el command prompt del PC0, se nos indica lo siguiente
+
+<p align="center">
+       <img src="./img/6.PNG"><br>
+       <br/>
+    </p>
+
+
+En conclusión podemos decir que:
+
+En modo simulación, se generó tráfico ICMP entre los hosts de diferentes AS. Al apagar el router (AS200), la tabla de ruteo de R1 eliminó la ruta BGP hacia la red y el tráfico se perdió. Tras volver a encender, BGP restableció la vecindad y la ruta fue reinstalada. La conectividad se restableció automáticamente, demostrando la tolerancia a fallos del protocolo BGP.
+
+4\)
+
+
+
+
+
+
+
+
 
 ---
 
