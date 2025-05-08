@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/46f1253f-d5f1-47e1-97f3-448eb6c5f1e8)# Trabajo Práctico N°4
+# Trabajo Práctico N°4
 # Ruteo externo dinámico y sistemas autónomos.
 
 **Nombres**  
