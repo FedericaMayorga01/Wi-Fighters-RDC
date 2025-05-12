@@ -100,7 +100,7 @@ El primer apartado del trabajo lleva a comprender los fundamentos teóricos del 
    Cada **AS** utiliza **BGP** para anunciar qué direcciones **IP** administra y con qué otros **AS** está conectado. Esta información se recopila en las tablas de enrutamiento **BGP**, que los routers consultan para decidir la mejor ruta que debe seguir cada paquete de datos.
 
    2) El _Border Gateway Protocol_ (**BGP**) es el protocolo encargado de decidir por qué rutas viajan los datos a través de Internet. Esto se logra mediante el intercambio de información de enrutamiento entre dispositivos llamados pares BGP o BGP speakers, que operan en los límites de cada **AS**. **BGP** tiene como objetivo encontrar las mejores rutas disponibles, actualizarse dinámicamente ante cambios en la red, y respetar políticas de enrutamiento definidas por cada organización.
-   <br/>
+   <br/><br/>
    - Adquisición de vecino
      - El proceso comienza con la adquisición de vecino, que ocurre cuando dos routers **BGP** establecen una conexión **TCP** entre ellos. Luego intercambian mensajes OPEN para identificarse, verificar compatibilidades y negociar parámetros como el **ASN** y el tiempo de espera (Hold Time). Si ambas partes aceptan los términos, se forma una sesión **BGP** activa entre los dos routers, ahora considerados vecinos.
    <br/><br/>
@@ -121,7 +121,7 @@ El primer apartado del trabajo lleva a comprender los fundamentos teóricos del 
      - Marker (16 bytes): usado para autenticación.
      - Length (2 bytes): indica la longitud total del mensaje.
      - Type (1 byte): especifica el tipo de mensaje (OPEN, UPDATE, etc.).  
-   <br/>
+   <br/><br/>
    El cuerpo del mensaje varía según su tipo e incluye datos como **ASN**, prefijos **IP**, atributos de ruta, o códigos de error en caso de notificaciones.
    <br/><br/>
    3) El **BGP** puede clasificarse en dos tipos según el contexto en el que se utilice:
