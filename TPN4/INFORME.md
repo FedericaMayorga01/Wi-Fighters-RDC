@@ -142,9 +142,55 @@ El primer apartado del trabajo lleva a comprender los fundamentos teóricos del 
          <br/>
       </p>
 
-   4) HACER Buscar las conexiones del AS en mi conexión actual. ¿Cuántas conexiones eBGP tiene mi AS?, incluir un gráfico de los AS a uno o dos grados de separación (Ejemplo).
+   4) Para ver las conexiones del AS actual utilizamos la herramienta bgpview.io estando conectados a la red de la universidad podemos observar el siguiente mapa de conexiones:
+
+   <p align="center">
+         <img src="./img/TPN4_BGP_ConnMap.png"><br>
+         <em>Figura 5: Gráfico de conexiones externas BGP UNC.</em>
+         <br/>
+      </p>
+      
+    Este mapa nos muestra las eBGP *upstream*  con las que se está directamente conectada (termino no estandarizado posiblemente referido a "AS que le proveen un servicio", luego *downstream* sería "AS a los que se les provee un servicio) y un árbol de conexiones que parte de las mismas. Desde la ventana principar observamos que la red tiene 5 *peers* IPv4 y 3 *peers* IPv6, aunque viendo a más detalle estos últimos 3 se corresponden a los mismos proveedores de algunas de las anteriores 5 que permiten conexiones con ambos protocolos.
+
+   <p align="center">
+         <img src="./img/TPN4_BGP_ipv4_peers.png"><br>
+         <em>Figura 6: eBGP IPv4 de la AS UNC.</em>
+         <br/>
+      </p>    
+      
+   <p align="center">
+         <img src="./img/TPN4_BGP_ipv6_peers.png"><br>
+         <em>Figura 7: eBGP IPv6 de la AS UNC.</em>
+         <br/>
+      </p>    
+    
    
-   5) HACER Buscar las conexiones del AS conectándome a alguna red distinta a la del punto anterior (puede ser 4G/5G de mi teléfono, alguna red en la facultad, etc.). ¿Qué diferencias/similitudes puedo identificar?
+   5) Realizando el mismo procedimiento con la red 4G se obtiene está información:
+   
+      <p align="center">
+         <img src="./img/TPN4_BGP_4G.png"><br>
+         <em>Figura 7: BGP info 4G.</em>
+         <br/>
+      </p>
+
+   Donde se observa desde ya que la red tiene muchos más peers.<br/><br/>
+   Observando el mapa de conexiones upstream observamos algunas similitudes:
+   
+      <p align="center">
+         <img src="./img/TPN4_BGP_ConMap_4G.png"><br>
+         <em>Figura 8: Árbol de conexiones BGP red 4G.</em>
+         <br/>
+      </p>
+   
+   Específicamente se observa:
+   
+     - **AS2497** - Internet Initiative Japan Inc.
+     - **AS174** - Cogent Communications
+     - **AS209** - CenturyLink Communications, LLC
+     - **AS3549** - Level 3 Parent, LLC
+     - **AS7018** - AT&T Enterprises, LLC
+   
+   Todas estas se corresponden a AS de tránsito o **Tier 1** que son AS que proveen servicios de tránsito a nivel global.
    
    6) HACER Investigar algún problema en enrutamiento BGP que haya tenido un impacto en servicios de red a nivel nacional/internacional. Elaborar un resumen de las causas y las consecuencias.
    
