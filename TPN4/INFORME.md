@@ -173,7 +173,8 @@ El primer apartado del trabajo lleva a comprender los fundamentos teóricos del 
          <br/>
       </p>
 
-   Donde se observa desde ya que la red tiene muchos más peers.<br/><br/>
+   Donde se observa desde ya que la red tiene muchos más peers.
+   <br/><br/>
    Observando el mapa de conexiones upstream observamos algunas similitudes:
    
       <p align="center">
@@ -192,7 +193,11 @@ El primer apartado del trabajo lleva a comprender los fundamentos teóricos del 
    
    Todas estas se corresponden a AS de tránsito o **Tier 1** que son AS que proveen servicios de tránsito a nivel global.
    
-   6) HACER Investigar algún problema en enrutamiento BGP que haya tenido un impacto en servicios de red a nivel nacional/internacional. Elaborar un resumen de las causas y las consecuencias.
+   6) El 23 de Abril 1997 a las 11:14a.m. EDT ocurrió un fallo producido por un router de *MAI Network Services* bajo el AS7007 filtrando tablas de enrutamiento internas al internet. Esto produjo que los AS externos llenaran sus tablas de enrutamiento con las mas de 50000 direcciones proveídas por AS7007 que al ser más específicas BGP las consideró más óptimas, redirigiendo una gran parte del tráfico del internet a AS7007 saturando la red y creando un agujero negro (Punto en la red donde los paquetes se descartan sin informar al origen que el mensaje no fue recibido).
+   <br/><br/>
+      El problema fue causado según MAI Network Servicies por un bug interno del que no se tienen muchos detalles, pero si se pueden estudiar las consecuencias. Dado que las IP internas usaban prefijos */24* eran más específicas que las direcciones típicas del nivel de red en el que ocurrió el error, esto como ya se mencionó produjo que fueran rutas preferentes, y los routers externos no descartaban la ruta manteniendo la situación en el tiempo.
+   <br/><br/>
+       Incluso cuando el router original fue desconectado el error persistió debido a las rutas persistiendo el routers externos y los routers internos de AS7007 posiblemente siendo incapaces de notificar el cambio por el gran nivel de tráfico que les llegaba. EL problema se soluciono apagando/reiniciando los puertos afectados y agregando filtros a la entrada para recuperar el funcionamiento interno de la red.
    
 
 ---
