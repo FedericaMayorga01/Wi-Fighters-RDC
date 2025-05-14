@@ -517,8 +517,14 @@ Se comprobó conectividad IPv4 e IPv6 entre h4 y los hosts de AS200 mediante com
 
 ## Resultados
 
-## Discusión y conclusiones
+Este trabajo práctico tuvo como objetivo central la comprensión e implementación de Border Gateway Protocol entre sistemas autónomos, su integración con protocolos internos como OSPF, y la conectividad entre redes IPv4 e IPv6. A lo largo del desarrollo se investigó el concepto de AS, su identificación mediante ASN, y se exploraron herramientas como bgp.he.net y peeringdb.com.  
+  
+Se configuraron dos AS en Packet Tracer (AS100 y AS200) con routers Cisco, implementando eBGP entre ellos para anunciar redes. Se integró IPv6 y se comprobó la conectividad completa entre los nodos de ambos AS. Se incorporó un nuevo router, switch y host (h4) al AS100, que se configuró con rutas estáticas. Posteriormente se implementó OSPF como protocolo interno en AS100 entre Router0 y Router2, y se realizó la redistribución de rutas OSPF en BGP para que sean visibles desde AS200.
 
-[1] Hurricane Electric BGP toolkit Home [Hurricane Electric]([LINK](https://bgp.he.net/))
-[2] PeeringDB [PeeringDB]([LINK](https://www.peeringdb.com/))
-[3] RFC 4271 [The Internet Society]([LINK](https://datatracker.ietf.org/doc/html/rfc4271))
+Finalmente, se verificó la conectividad completa desde h4 hacia los hosts del AS200, confirmando el éxito de la redistribución y la integración multiruta. El trabajo nos permitió aplicar conceptos teóricos de interconexión de redes, jerarquía de enrutamiento, y dual stack (IPv4/IPv6), utilizando simulación práctica.  
+
+---
+
+[1] Hurricane Electric BGP toolkit Home [Hurricane Electric]([LINK](https://bgp.he.net/))  
+[2] PeeringDB [PeeringDB]([LINK](https://www.peeringdb.com/))  
+[3] RFC 4271 [The Internet Society]([LINK](https://datatracker.ietf.org/doc/html/rfc4271))  
