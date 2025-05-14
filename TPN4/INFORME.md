@@ -169,7 +169,7 @@ El primer apartado del trabajo lleva a comprender los fundamentos teóricos del 
    
       <p align="center">
          <img src="./img/TPN4_BGP_4G.png"><br>
-         <em>Figura 7: BGP info 4G.</em>
+         <em>Figura 8: BGP info 4G.</em>
          <br/>
       </p>
 
@@ -179,7 +179,7 @@ El primer apartado del trabajo lleva a comprender los fundamentos teóricos del 
    
       <p align="center">
          <img src="./img/TPN4_BGP_ConMap_4G.png"><br>
-         <em>Figura 8: Árbol de conexiones BGP red 4G.</em>
+         <em>Figura 9: Árbol de conexiones BGP red 4G.</em>
          <br/>
       </p>
    
@@ -206,107 +206,314 @@ El primer apartado del trabajo lleva a comprender los fundamentos teóricos del 
 ## Introducción  
 En la segunda parte, se traslada el conocimiento teórico a una implementación práctica mediante la simulación de una red que interconecta múltiples sistemas autónomos utilizando BGP. Se emplea un entorno virtual, para construir la topología de red, verificar conectividad entre hosts, introducir configuraciones para IPv6 y realizar pruebas de redistribución de rutas con OSPF. Buscamos analizar el comportamiento del protocolo ante distintos eventos como caídas de routers o cambios en la topología, reforzando así la comprensión del funcionamiento de BGP en escenarios reales y dinámicos.
 
+---
+
+## Consignas
+
 
 1\)
 
 A continuación mostraremos los respectivos comandos y explicaremos lo que hacen cada uno.
-
-show ip summary  
-<p align="center">
-       <img src="./img/0.png"><br>
-       <br/>
-    </p>
-    
-show ip bgp  
+  
+- `show ip bgp`: Muestra el estado de la sesión BGP en el router, incluyendo las rutas BGP aprendidas, las conexiones establecidas con otros routers BGP, y detalles sobre la tabla de rutas BGP. 
 <p align="center">
        <img src="./img/1.png"><br>
+       <em>Figura 10: Comando show ip bgp.</em>
        <br/>
     </p>
     
-show ip route  
+- `show ip route`: Muestra la tabla de rutas IP del dispositivo, mostrando las rutas que el router ha aprendido, ya sea de manera estática, dinámica o directamente conectada, con detalles sobre la fuente de cada ruta y su estado.  
 <p align="center">
        <img src="./img/2.png"><br>
+       <em>Figura 11: Comando show ip route.</em>
        <br/>
     </p>
 
-El fragmento que evidencia es   
+- `show ip bgp summary`: Muestra un resumen del estado de las sesiones BGP, incluyendo el número de rutas y el estado de la vecindad.
+<p align="center">
+       <img src="./img/0.png"><br>
+       <em>Figura 12: Comando show ip bgp summary.</em>
+       <br/>
+    </p>
+  
+
+El fragmento de salida que evidencia es BGP, se muestra a continuación:  
 <p align="center">
        <img src="./img/medio.png"><br>
+       <em>Figura 13: Fracción de lo observado en la Figura 11.</em>
        <br/>
     </p>
 
-Explicacion de la tabla de Ruteo se encuentra en la ultima captura de pantalla en el ultimo fragmento. Tenemos:
+<br/>
 
-#### **`C 10.0.0.0 is directly connected, FastEthernet0/0`**
+En la salida de ``show ip route`` de la _Figura 11_ y la _Figura 13_, se puede identificar que una ruta fue aprendida a través de BGP por el prefijo ``B`` al principio de la línea. Explicaremos un poco más en detalle:
 
-Esta línea indica que la red 10.0.0.0/24 está directamente conectada al router a través de la interfaz FastEthernet0/0. El prefijo `C` (Connected) señala que es una red local al router, accesible sin necesidad de ruteo adicional.
+``B 192.168.2.0/24 [20/0] via 10.0.0.2, 00:00:00``
 
-#### **`C 192.168.1.0/24 is directly connected, FastEthernet0/1`**
+Esto indica que la red ``192.168.2.0/24`` fue aprendida mediante el protocolo BGP (el prefijo B en la tabla de ruteo). La información entre corchetes (``[20/0]``) refleja la distancia administrativa y la métrica de la ruta. En este caso:
 
-De forma similar a la anterior, esta entrada muestra que la red 192.168.1.0/24 también está directamente conectada al router, en este caso a través de la interfaz FastEthernet0/1. Probablemente sea la red donde está conectado un host local.
+- ``20`` es la distancia administrativa por defecto para rutas BGP externas (eBGP).
 
-#### **`B 192.168.2.0/24 [20/0] via 10.0.0.2, 00:00:00`**
+- ``0`` es la métrica interna de la ruta, que indica cuán preferida es esta ruta dentro de la red.
 
-Esta línea representa una ruta aprendida mediante BGP (prefijo `B`). La red de destino es 192.168.2.0/24, y para alcanzarla el router debe reenviar el tráfico al siguiente salto, que es la dirección IP 10.0.0.2. El valor `[20/0]` indica:
+La dirección ``10.0.0.2`` es el siguiente salto hacia la red de destino y ``00:00:00`` indica que esta ruta fue aprendida recientemente.
 
-`20`: distancia administrativa por defecto para rutas aprendidas por BGP externo (eBGP).  
-`0`: métrica interna de la ruta.
+<br/>
 
-El tiempo `00:00:00` indica que esta ruta fue recibida recientemente.
+La tabla de ruteo muestra todas las rutas conocidas por el router, las cuales pueden provenir de diferentes fuentes (conectadas, estáticas, o dinámicas, como BGP). En la figura X tenemos:
+
+- **`C 10.0.0.0 is directly connected, FastEthernet0/0`**: Esta línea indica que la red 10.0.0.0/24 está directamente conectada al router a través de la interfaz FastEthernet0/0. El prefijo `C` (Connected) señala que es una red local al router, accesible sin necesidad de ruteo adicional.
+
+- **`C 192.168.1.0/24 is directly connected, FastEthernet0/1`**: De forma similar a la anterior, esta entrada muestra que la red 192.168.1.0/24 también está directamente conectada al router, en este caso a través de la interfaz FastEthernet0/1. Probablemente sea la red donde está conectado un host local.
+
+- **`B 192.168.2.0/24 [20/0] via 10.0.0.2, 00:00:00`**:  Esta línea representa una ruta aprendida mediante BGP (prefijo `B`). La red de destino es 192.168.2.0/24, y para alcanzarla el router debe reenviar el tráfico al siguiente salto, que es la dirección IP 10.0.0.2.  
+
 
 2\) 
 
-Para comprobar la conexión entre los AS, realizamos ping desde el Host 0 (PC0) al Host 2 (PC2)
+Para comprobar la conexión entre los AS, realizamos el comando ``ping`` desde un host en el AS1 (PC0) hacia un host en el AS2 (PC2).
 
 <p align="center">
        <img src="./img/3.png"><br>
+       <em>Figura 14: Conectividad entre AS1 y AS2.</em>
        <br/>
     </p>
 
-Vemos que efectivamente el ping es recibido correctamente, demostrando asi la conexión entre los AS
+El ping exitoso entre PC0 en AS1 y PC2 en AS2 demuestra que la conectividad entre los hosts de los diferentes AS está funcionando correctamente, y el tráfico es capaz de viajar a través de los routers que interconectan los dos sistemas autónomos.
+
 
 3\)
 
-Router encendido
+En este escenario, hemos realizado una simulación de tráfico ICMP entre los hosts PC0 (en AS1) y PC3 (en AS2). A continuación, se describe el comportamiento observado al apagar y encender un router en la red.
 
-Al realiza un ping desde el PC0 al PC3, con ambos routers encendidos, observamos como el paquete viaja a través de la red con normalidad
+**Router encendido:**  
+Al realiza un ping desde el PC0 al PC3, con ambos routers encendidos, observamos como el tráfico ICMP viaja correctamente a través de la red. PC0 envía el paquete, y este es encaminado a través de Router0 y Router1 hacia PC3.
 <p align="center">
        <img src="./img/4.png"><br>
+       <em>Figura 15: Tráfico con el router encendido.</em>
        <br/>
     </p>
-Router apagado
 
-Observamos como el paquete enviado desde PC0, llega al Router0, pero este no puede llegar al destino debido a que el Router1 fue apagado
+La conectividad funciona con normalidad, mostrando que los routers están correctamente configurados y que BGP está en funcionamiento.  
 
+**Router apagado:**
+Observamos como el paquete enviado desde PC0, llega al Router0, pero este no puede llegar al destino debido a que el Router1 fue apagado. El paquete llega hasta Router0, pero como no puede encontrar una ruta válida hacia Router1, el paquete se pierde.
 <p align="center">
        <img src="./img/5.png"><br>
+       <em>Figura 16: Tráfico con el router apagado.</em>
        <br/>
     </p>
-Observando en el command prompt del PC0, se nos indica lo siguiente
 
+Observando en el command prompt del PC0, se nos indica lo siguiente
 <p align="center">
        <img src="./img/6.png"><br>
+       <em>Figura 17: Respuesta al comando con el router apagado.</em>
        <br/>
     </p>
 
 
 En conclusión podemos decir que:
 
-En modo simulación, se generó tráfico ICMP entre los hosts de diferentes AS. Al apagar el router (AS200), la tabla de ruteo de R1 eliminó la ruta BGP hacia la red y el tráfico se perdió. Tras volver a encender, BGP restableció la vecindad y la ruta fue reinstalada. La conectividad se restableció automáticamente, demostrando la tolerancia a fallos del protocolo BGP.
+En modo simulación, se generó tráfico ICMP entre los hosts de diferentes AS. Al apagar el router perteneciente al AS200, la tabla de ruteo de R1 eliminó la ruta BGP hacia la red y el tráfico se perdió. Tras volver a encender, BGP restableció la vecindad y la ruta fue reinstalada. La conectividad se restableció automáticamente, demostrando la tolerancia a fallos del protocolo BGP.
+
 
 4\)
 
+Se explicarán las configuraciones necesarias para implementar IPv6 en la infraestructura de red entre los AS100 y AS200. A continuación, se detallan los pasos principales realizados:
+
+Se activó el soporte para IPv6 en ambos routers ejecutando el comando ``ipv6 unicast-routing``, esto permite que el router procese y enrute tráfico IPv6.  
+Para verificar que IPv6 quedó activado correctamente, se utilizó el comando ``show running-config | include ipv6 unicast-routing``.
+
+<p align="center">
+   <img src="./img/TPN4_R0_IPV6.PNG"><br>
+   <em>Figura 18: Habilitación de IPv6 en Routers.</em>
+   <br/>
+</p>
+
+Cada interfaz de los routers fue configurada con una dirección IPv6 global del prefijo ``2001:DB8::/64``, como es común en redes de laboratorio. 
+
+**En Router0 (AS100):**
+- **FastEthernet0/0:** ``2001:0DB8:10::1/64`` (conexión al Router1)
+- **FastEthernet0/1:** ``2001:0DB8:100::1/64`` (red interna con hosts)
+  
+**En Router1 (AS200):**
+- **FastEthernet0/0:** ``2001:0DB8:10::2/64`` (conexión al Router0)
+- **FastEthernet0/1:** ``2001:0DB8:200::1/64`` (red interna con hosts)
+  
+Para permitir el enrutamiento entre los AS, se configuraron rutas IPv6 estáticas en cada router. Con el comando ``ipv6 route 2001:0DB8:200::/64 2001:0DB8:10::2``
+ y ``ipv6 route 2001:0DB8:100::/64 2001:0DB8:10::1``, respectivamente. Esto asegura que cada router conozca la ruta hacia la red interna del otro AS.  
+
+<p align="center">
+   <img src="./img/TPN4_R0_IPV6.PNG"><br>
+   <em>Figura 19: Habilitación de enrutamiento para IPv6 en Routers.</em>
+   <br/>
+</p>
+
+Luego, cada PC fue configurada con una dirección IPv6 estática, correspondiente a su red y AS, como se observa en las figuras. Cada host también fue configurado con su gateway IPv6 correspondiente.
+
+<p align="center">
+   <img src="./img/TPN4_PC0_IPV6.PNG"><br>
+   <em>Figura 20: Asignación de direcciones IPv6 en PC0.</em>
+   <br/>
+</p>
+
+<p align="center">
+   <img src="./img/TPN4_PC1_IPV6.PNG"><br>
+   <em>Figura 21: Asignación de direcciones IPv6 en PC1.</em>
+   <br/>
+</p>
+
+<p align="center">
+   <img src="./img/TPN4_PC2_IPV6.PNG"><br>
+   <em>Figura 22: Asignación de direcciones IPv6 en PC2.</em>
+   <br/>
+</p>
+
+<p align="center">
+   <img src="./img/TPN4_PC3_IPV6.PNG"><br>
+   <em>Figura 23: Asignación de direcciones IPv6 en PC3.</em>
+   <br/>
+</p>
+
+Se realizó una prueba de conectividad con el comando ping entre los hosts de distintos AS. El resultado fue exitoso, como se observa en la Figura 24. Esto confirma que las configuraciones IPv6 fueron aplicadas correctamente, la comunicación entre los sistemas autónomos AS100 y AS200 mediante IPv6 es funcional y que las rutas estáticas IPv6 están correctamente establecidas en ambos routers.
+
+<p align="center">
+   <img src="./img/TPN4_ping_IPV6.PNG"><br>
+   <em>Figura 24: Verificación de conectividad.</em>
+   <br/>
+</p>
 
 
+5\)
+
+Vemos en el desarrollo de esta tabla, la documentación de todos los dispositivos de red (routers, PCs y switches), donde se especifican sus interfaces, redes, direcciones IP (IPv4 e IPv6) y máscaras.
+
+| Equipo |  Interfaz | IP de red |  IPv4  | Máscara |  IPv6  | Comentarios |
+|------- |-----------|-----------|--------|---------|--------|-------------|
+| R0 | FastEthernet0/0 | 10.0.0.0 | 10.0.0.1 | 255.255.255.0 | 2001:0DB8:10::1/64 |Enlace con router 1 (AS200) |
+| R0 | FastEthernet0/1 | 192.168.1.0 | 192.168.1.1 | 255.255.255.0 | 2001:0DB8:100::1/64 | Red interna AS100 (hosts y switch0) |
+| R1 | FastEthernet0/0 | 10.0.0.0 | 10.0.0.2 | 255.255.255.0 | 2001:0DB8:10::2/64 |Enlace con router 0 (AS100) |
+| R1 | FastEthernet0/1 | 192.168.2.0 | 192.168.2.1 | 255.255.255.0 | 2001:0DB8:200::1/64 | Red Interna AS200 (hosts y switch1) |
+| PC0 | FastEthernet0 | 192.168.1.0 | 192.168.1.2 | 255.255.255.0 | 2001:0DB8:100::2/64 | Host en AS100 |
+| PC1 | FastEthernet0 | 192.168.1.0 | 192.168.1.3 | 255.255.255.0 | 2001:0DB8:100::3/64 |Host en AS100 |
+| PC2 | FastEthernet0 | 192.168.2.0 | 192.168.2.2 | 255.255.255.0 | 2001:0DB8:200::2/64 | Host en AS200 |
+| PC3 |FastEthernet0 |192.168.2.0 | 192.168.2.3 | 255.255.255.0 | 2001:0DB8:200::3/64 |Host en AS200 |
+| SW0 | VLAN1 | N/A | N/A | N/A | N/A | Switch en AS100 |
+| SW1 | VLAN1 | N/A | N/A | N/A | N/A | Switch en AS200 |
 
 
+6\)
+
+Para ampliar el AS100 integrando un nuevo router (Router2), un switch, y un host (h4), se debe garantizar su integración al dominio de enrutamiento, inicialmente mediante rutas estáticas.
+
+Observemos que en los routers Cisco 1841, cuando se agrega el módulo HWIC-4ESW, las interfaces se tratan como puertos de switch, no como interfaces de router normales. Esto significa que no se pueden configurar directamente con ``ip address`` como se venía haciendo en una interfaz de enrutamiento normal. En lugar de eso, se debe usar una interfaz VLAN, ya que estos puertos son de capa 2. Al utilizar la interfaz VLAN, quedan como si fueran de capa 3.
+
+<p align="center">
+   <img src="./img/TPN4_R2_config.PNG"><br>
+   <em>Figura 25: Configuración en router 0 para la incorporacion del router 2.</em>
+   <br/>
+</p>
+
+Realizamos las configuraciones necesarias en los router 0 y router 2.
+
+<p align="center">
+   <img src="./img/TPN4_R0_R2_config.PNG"><br>
+   <em>Figura 26: Configuración en router 0.</em>
+   <br/>
+</p>
+
+<p align="center">
+   <img src="./img/TPN4_R2_R0_config.PNG"><br>
+   <em>Figura 27: Configuración en router 2.</em>
+   <br/>
+</p>
+
+Y verificamos con la configuración estática en PC4 (host 4):
+<p align="center">
+   <img src="./img/TPN4_PC4_config_IPv4_IPv6.PNG"><br>
+   <em>Figura 28: Configuración estática en PC4.</em>
+   <br/>
+</p>
+
+Desde PC4, se realiza un ``ping`` a su gateway ``IPv4 192.168.4.1``, comprobando conectividad directa.
+
+<p align="center">
+   <img src="./img/TPN4_ping_PC4.PNG"><br>
+   <em>Figura 29: Comando ping en PC4.</em>
+   <br/>
+</p>
+
+Se incorporó correctamente un nuevo router (Router2), switch y host al AS100. La red 192.168.4.0/24 quedó plenamente integrada. La conectividad local está asegurada. Las pruebas confirman que h4 puede comunicarse con su gateway tanto en IPv4 como en IPv6.
 
 
+7\)
+
+Si nuestr objetivo es que todos los routers del AS100 (Router0 y Router2) compartan sus rutas internamente usando OSPF, debemos realizar las siguientes configuraciones:
+
+<p align="center">
+   <img src="./img/TPN4_OSPF_R0.PNG"><br>
+   <em>Figura 30: Configuración OSPF en router 0.</em>
+   <br/>
+</p>
+
+<p align="center">
+   <img src="./img/TPN4_OSPF_R2.PNG"><br>
+   <em>Figura 31: Configuración OSPF en router 2.</em>
+   <br/>
+</p>
+
+Ahora, para verificar los vecinos por OSPF, usamos el comando ``show ip ospf neighbor``, como vemos en la _Figura 32_.
+
+<p align="center">
+   <img src="./img/TPN4_OSPF_R0_neighbor.PNG"><br>
+   <em>Figura 32: Desde R0, se ve a R2 como vecino.</em>
+   <br/>
+</p>
+
+Y para confirmar las rutas aprendidas por OSPF, usamos el comando ``show ip route``, vemos desde el router 0:
+
+<p align="center">
+   <img src="./img/TPN4_OSPF_route.PNG"><br>
+   <em>Figura 33: Comando show ip route en router 0.</em>
+   <br/>
+</p>
 
 
----
+8\)
 
-## Consignas
+En esta etapa, se redistribuyeron las rutas OSPF internas del AS100 en BGP a través de Router0. Esto permite que las redes que pertenecen a Router2 y a la red de PC4  sean visibles y accesibles desde el AS200.
+
+La redistribución se configuró con el comando ``redistribute ospf 1`` dentro del proceso BGP de Router0.
+
+<p align="center">
+   <img src="./img/TPN4_OSPF_redistribute.PNG"><br>
+   <em>Figura 34: Comando redistribute ospf 1 en router 0.</em>
+   <br/>
+</p>
+
+En Router1 perteneciente a AS200, al ejecutar ``show ip route``, se observan entradas BGP hacia redes del AS100. Esto indica que la redistribución fue exitosa.
+
+<p align="center">
+   <img src="./img/TPN4_OSPF_route.PNG"><br>
+   <em>Figura 35: Comando show ip route en router 1.</em>
+   <br/>
+</p>
+
+El router que actúa como punto de redistribución entre protocolos es Router0, ya que participa tanto en OSPF (internamente) como en BGP (externamente).
+
+
+9\)
+
+Se verifica la conectividad entre el host h4 (PC4) incorporado al AS100 y los hosts del AS200. Gracias a la redistribución de rutas OSPF en BGP realizada en Router0, los routers del AS200 pudieron acceder a la red ``192.168.4.0/24``.
+
+<p align="center">
+   <img src="./img/TPN4_ping_PC4_PC2_PC3.png"><br>
+   <em>Figura 36: Comando ping en PC4.</em>
+   <br/>
+</p>
+
+Se comprobó conectividad IPv4 e IPv6 entre h4 y los hosts de AS200 mediante comandos ping. Los resultados positivos confirmaron que las rutas fueron correctamente compartidas y que el diseño final del sistema autónomo es funcional.
+
 
 ## Resultados
 
