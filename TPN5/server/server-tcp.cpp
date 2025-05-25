@@ -1,5 +1,5 @@
 /**
- * Mian file for the server app
+ * Mian file for the TCP server app
  */
 
 #include <netinet/in.h>

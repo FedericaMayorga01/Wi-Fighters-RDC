@@ -1,5 +1,5 @@
 /**
- * Main file for client app
+ * Main file for TCP client app
  */
 
 #include <netinet/in.h>
@@ -45,7 +45,6 @@ int main(const int argc, char *argv[])
 
 	// Find server address info using host and port arguments
 	addrinfo hints{}, *res;
-	//hints.ai_family = AF_INET6;
 	hints.ai_socktype = SOCK_STREAM;
 	if (getaddrinfo(argv[1], argv[2], &hints, &res) != 0 || res == nullptr)
 	{

@@ -39,7 +39,7 @@ Tanto el programa cliente como servidor se realizaron con c++, los archivos fuen
 Una vez compilados, los ejecutables se encontrarán en una nueva carpeta *build*, para ejecutar el servidor se debe usar:
 
 ```bash
-./build/server/server <puerto>
+./build/server/server-tcp <puerto>
 ```
 
 Indicando el puerto que usará el servidor.
@@ -47,7 +47,7 @@ Indicando el puerto que usará el servidor.
 Para ejecutar el cliente se debe usar:
 
 ```bash
-./build/client/client <host> <puerto> <iteraciones> <ms>
+./build/client/client-tcp <host> <puerto> <iteraciones> <ms>
 ```
 
 Donde:
@@ -56,13 +56,34 @@ Donde:
 	- **iteraciones**: El cliente enviará el mensaje "WI-Fighters-i" reemplazando i por un número que se incrementará por cada mensaje. El argumento iteraciones indica cuantos mensajes se enviarán.
 	- **ms**: milisegundos entre mensajes que envía el cliente.
 
-    a) HACER: Probar el script entre dos computadoras, capturando tráfico y verificando que los paquetes estén transitando correctamente. Documentar con capturas de pantalla. Tomar un paquete aleatorio de la secuencia e identificar la carga útil del mismo.
+   a) HACER: Probar el script entre dos computadoras, capturando tráfico y verificando que los paquetes estén transitando correctamente. Documentar con capturas de pantalla. Tomar un paquete aleatorio de la secuencia e identificar la carga útil del mismo.
 
-    b) HACER: Agregar una feature al programa que permita loguear (persistir en un archivo) los paquetes enviados y recibidos, con una etiqueta de tiempo (timestamp) del momento en que fueron enviados/recibidos.
+   b) HACER: Agregar una feature al programa que permita loguear (persistir en un archivo) los paquetes enviados y recibidos, con una etiqueta de tiempo (timestamp) del momento en que fueron enviados/recibidos.
 
-    c) HACER: Con la información anterior, para una secuencia de 100 paquetes, calcular la latencia promedio, máxima, mínima y el jitter de la conexión. Utilizar una frecuencia de envío de ~1 seg.
+   c) HACER: Con la información anterior, para una secuencia de 100 paquetes, calcular la latencia promedio, máxima, mínima y el jitter de la conexión. Utilizar una frecuencia de envío de ~1 seg.
 
-2) HACER: Desarrollar un script análogo al punto anterior, pero para protocolo UDP. Repetir los ítems a), b) y c).
+2) Desarrollar un script análogo al punto anterior, pero para protocolo UDP. Repetir los ítems a), b) y c).
+
+Los archivos fuente para el cliente y servidor en UDP también se encuentran en las mismas carpetas *client* y *server* y se compilan al ejecutar el mismo script *build.sh* para ejecutar el servidor se usa:
+
+```bash
+./build/server/server-udp <puerto>
+```
+
+Y para el cliente:
+
+```bash
+./build/client/client-udp <host> <puerto> <iteraciones> <ms>
+```
+
+Los argumentos son los mismos que sus contrapartes en TCP
+
+   a) HACER: Probar el script entre dos computadoras, capturando tráfico y verificando que los paquetes estén transitando correctamente. Documentar con capturas de pantalla. Tomar un paquete aleatorio de la secuencia e identificar la carga útil del mismo.
+
+   b) HACER: Agregar una feature al programa que permita loguear (persistir en un archivo) los paquetes enviados y recibidos, con una etiqueta de tiempo (timestamp) del momento en que fueron enviados/recibidos.
+
+   c) HACER: Con la información anterior, para una secuencia de 100 paquetes, calcular la latencia promedio, máxima, mínima y el jitter de la conexión. Utilizar una frecuencia de envío de ~1 seg.
+
 
 3) HACER: Comparar un paquete UDP y un paquete TCP capturados, mostrar las diferencias y elaborar una tabla comparativa para las métricas obtenidas en el punto C.
 
