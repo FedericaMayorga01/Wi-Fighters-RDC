@@ -1,3 +1,4 @@
+
 # Trabajo Práctico N°5
 # Sockets
 
@@ -56,11 +57,23 @@ Donde:
 	- **iteraciones**: El cliente enviará el mensaje "WI-Fighters-i" reemplazando i por un número que se incrementará por cada mensaje. El argumento iteraciones indica cuantos mensajes se enviarán.
 	- **ms**: milisegundos entre mensajes que envía el cliente.
 
-   a) HACER: Probar el script entre dos computadoras, capturando tráfico y verificando que los paquetes estén transitando correctamente. Documentar con capturas de pantalla. Tomar un paquete aleatorio de la secuencia e identificar la carga útil del mismo.
+   a) Al probar los scripts y capturar el trafico observamos lo siguiente
+   Del lado del servidor podemos observar que el recibe le mensaje que el cliente le envia:
+   ![](TPN5/img/Servidor_recibe.png)
+   Ahora observamos la manera en la que el cliente envia el mensaje:
+   ![](TPN5/img/terminal_envio.png)
+   Capturando el paquete con wireshark lo observamos de la siguiente manera:
+   ![](TPN5/img/wire_transit.png)
 
-   b) HACER: Agregar una feature al programa que permita loguear (persistir en un archivo) los paquetes enviados y recibidos, con una etiqueta de tiempo (timestamp) del momento en que fueron enviados/recibidos.
+   b) A continuacion presentamos imagenes del log guardando registro de los mensajes
+   Log creado:
+   ![](TPN5/img/log1.png)
+   Revision del log:
+   ![](TPN5/img/log2.png)
 
-   c) HACER: Con la información anterior, para una secuencia de 100 paquetes, calcular la latencia promedio, máxima, mínima y el jitter de la conexión. Utilizar una frecuencia de envío de ~1 seg.
+   c) Enviamos 100 mensajes de "hola" mediante un script de la terminal, y realizamos los calculos con un script de python. 
+   A raiz de esto podemos observar los siguientes resultados:
+   ![](TPN5/img/Calculo_Latencia.png)
 
 2) Desarrollar un script análogo al punto anterior, pero para protocolo UDP. Repetir los ítems a), b) y c).
 
