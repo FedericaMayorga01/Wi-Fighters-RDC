@@ -1,3 +1,5 @@
+
+
 # Trabajo Práctico N°5
 # Sockets
 
@@ -56,11 +58,23 @@ Donde:
 	- **iteraciones**: El cliente enviará el mensaje "WI-Fighters-i" reemplazando i por un número que se incrementará por cada mensaje. El argumento iteraciones indica cuantos mensajes se enviarán.
 	- **ms**: milisegundos entre mensajes que envía el cliente.
 
-   a) HACER: Probar el script entre dos computadoras, capturando tráfico y verificando que los paquetes estén transitando correctamente. Documentar con capturas de pantalla. Tomar un paquete aleatorio de la secuencia e identificar la carga útil del mismo.
+   a) Al probar los scripts y capturar el trafico observamos lo siguiente
+   Del lado del servidor podemos observar que el recibe le mensaje que el cliente le envia:
+   <p><img src="./img/Servidor_recibe.png"><br></p>
+   Ahora observamos la manera en la que el cliente envia el mensaje:
+   <p><img src="./img/terminal_envio.png"><br></p>
+   Capturando el paquete con wireshark lo observamos de la siguiente manera:
+   <p><img src="./img/wire_transit.png"><br></p>
 
-   b) HACER: Agregar una feature al programa que permita loguear (persistir en un archivo) los paquetes enviados y recibidos, con una etiqueta de tiempo (timestamp) del momento en que fueron enviados/recibidos.
+   b) A continuacion presentamos imagenes del log guardando registro de los mensajes
+   Log creado:
+   <p><img src="./img/log1.png"><br></p>
+   Revision del log:
+   <p><img src="./img/log2.png"><br></p>
 
-   c) HACER: Con la información anterior, para una secuencia de 100 paquetes, calcular la latencia promedio, máxima, mínima y el jitter de la conexión. Utilizar una frecuencia de envío de ~1 seg.
+   c) Enviamos 100 mensajes de "hola" mediante un script de la terminal, y realizamos los calculos con un script de python. 
+   A raiz de esto podemos observar los siguientes resultados:
+   <p><img src="./img/Calculo_Latencia.png"><br></p>
 
 2) Desarrollar un script análogo al punto anterior, pero para protocolo UDP. Repetir los ítems a), b) y c).
 
@@ -78,11 +92,15 @@ Y para el cliente:
 
 Los argumentos son los mismos que sus contrapartes en TCP
 
-   a) HACER: Probar el script entre dos computadoras, capturando tráfico y verificando que los paquetes estén transitando correctamente. Documentar con capturas de pantalla. Tomar un paquete aleatorio de la secuencia e identificar la carga útil del mismo.
 
-   b) HACER: Agregar una feature al programa que permita loguear (persistir en un archivo) los paquetes enviados y recibidos, con una etiqueta de tiempo (timestamp) del momento en que fueron enviados/recibidos.
+   a) Al probar los scripts y capturar el trafico con Wireshark observamos lo siguiente 
+   <p><img src="./img/wire_udp.png"><br></p>
 
-   c) HACER: Con la información anterior, para una secuencia de 100 paquetes, calcular la latencia promedio, máxima, mínima y el jitter de la conexión. Utilizar una frecuencia de envío de ~1 seg.
+   b) De la misma manera que para TCP, creamos un log "server_udp.log".
+
+   c) Enviamos 100 mensajes de "hola" mediante un script de la terminal, y realizamos los calculos con un script de python. 
+   A raiz de esto podemos observar los siguientes resultados:
+   <p><img src="./img/Calculo_Latencia_UDP.png"><br></p>
 
 
 3) HACER: Comparar un paquete UDP y un paquete TCP capturados, mostrar las diferencias y elaborar una tabla comparativa para las métricas obtenidas en el punto C.
