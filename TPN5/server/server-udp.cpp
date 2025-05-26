@@ -7,6 +7,10 @@
 #include <unistd.h>
 #include <csignal>
 #include <vector>
+#include <fstream>
+#include <chrono>
+#include <iomanip>
+#include <ctime>
 
 /// Socket file descriptor of the server
 int sock_fd = -1;
@@ -27,6 +31,18 @@ void sig_handler(int signum)
  * @param argc number of arguments
  * @param argv server <port>
  */
+
+// Función para obtener la timestamp actual en formato legible
+std::string current_timestamp()
+{
+    auto now = std::chrono::system_clock::now();
+    std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+    std::tm tm = *std::localtime(&now_c);
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "%Y-%m-%d %H:%M:%S");
+    return oss.str();
+}
+
 int main(const int argc, char* argv[])
 {
 	// Verify arguments
@@ -70,6 +86,15 @@ int main(const int argc, char* argv[])
 		return EXIT_FAILURE;
 	}
 
+	// Abrir archivo de log en modo append
+    std::ofstream log_file("server_udp.log", std::ios::app);
+    if (!log_file.is_open())
+    {
+        std::cerr << "Failed to open log file" << std::endl;
+        perror("open");
+        return EXIT_FAILURE;
+    }
+
 	std::string msg{};
 	socklen_t addr_len = sizeof(addr);
 	while (true)
@@ -85,7 +110,7 @@ int main(const int argc, char* argv[])
 		}
 		msg = {buffer.data()};
 
-		// TODO: log received message
+		log_file << "[" << current_timestamp() << "] Received: " << msg << std::endl;
 		std::cout << "CLIENT: " << msg << std::endl;
 
 		// If the message is "quit" finish
@@ -104,11 +129,13 @@ int main(const int argc, char* argv[])
 			std::cerr << "Failed to write to client" << std::endl;
 			return EXIT_FAILURE;
 		}
-		// TODO: log sent message
+		log_file << "[" << current_timestamp() << "] Sent: " << msg << std::endl;
 	}
 
 	if (sock_fd != -1)
 		close(sock_fd);
+	log_file << "[" << current_timestamp() << "] Server closed" << std::endl;
+	log_file.close();
 	std::cout << "Closing server" << std::endl;
 	return EXIT_SUCCESS;
 }

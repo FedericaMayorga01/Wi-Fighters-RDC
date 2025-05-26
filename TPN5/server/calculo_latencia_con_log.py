@@ -24,7 +24,8 @@ def calcular_estadisticas(latencias):
     return promedio, maxima, minima, jitter
 
 if __name__ == "__main__":
-    archivo = "server.log"
+    # archivo = "server.log" USADA PARA EL LOG DE TCP
+    archivo = "server_udp.log"
     latencias = leer_latencias(archivo)
     if not latencias:
         print("No se encontraron pares Sent/Received en el archivo.")
