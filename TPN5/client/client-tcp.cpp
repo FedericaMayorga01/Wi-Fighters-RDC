@@ -10,6 +10,7 @@
 #include <strings.h>
 #include <csignal>
 #include <vector>
+#include <chrono> // Agrega esto
 
 /// Socket file descriptor to communicate whit the server
 int sock_fd = -1;
@@ -77,10 +78,13 @@ int main(const int argc, char *argv[])
 	const auto sleep_ms = std::stoi(argv[4]);
 	const std::string preamble = "WI-Fighters-";
 	std::string msg{};
+	std::vector<double> latencias; // Vector para guardar latencias
 
 	// Begin communications
 	for (auto i = 0; i < iterations; ++i)
 	{
+		auto start = std::chrono::high_resolution_clock::now(); // Marca tiempo antes de enviar
+
 		// First send a message (WI_Fighters-i)
 		msg = preamble + std::to_string(i);
 		if (write(sock_fd, msg.data(), msg.size()) < 0)
@@ -103,6 +107,11 @@ int main(const int argc, char *argv[])
 			std::cerr << "Failed to read from server" << std::endl;
 			return EXIT_FAILURE;
 		}
+
+		auto end = std::chrono::high_resolution_clock::now(); // Marca tiempo después de recibir
+		std::chrono::duration<double, std::milli> rtt = end - start;
+		latencias.push_back(rtt.count()); // Guarda la latencia en ms
+
 		std::cout << "SERVER: " << buffer.data() << std::endl;
 
 		// Sleep
@@ -117,6 +126,24 @@ int main(const int argc, char *argv[])
 		close(sock_fd);
 	}
 	freeaddrinfo(res);
+
+	// Al final, calcula y muestra estadísticas
+	if (!latencias.empty()) {
+		double suma = 0, max = latencias[0], min = latencias[0], jitter = 0;
+		for (size_t i = 0; i < latencias.size(); ++i) {
+			suma += latencias[i];
+			if (latencias[i] > max) max = latencias[i];
+			if (latencias[i] < min) min = latencias[i];
+			if (i > 0) jitter += std::abs(latencias[i] - latencias[i-1]);
+		}
+		double promedio = suma / latencias.size();
+		jitter = jitter / (latencias.size() - 1);
+
+		std::cout << "Latencia promedio: " << promedio << " ms\n";
+		std::cout << "Latencia máxima: " << max << " ms\n";
+		std::cout << "Latencia mínima: " << min << " ms\n";
+		std::cout << "Jitter: " << jitter << " ms\n";
+	}
 
 	return EXIT_SUCCESS;
 }
