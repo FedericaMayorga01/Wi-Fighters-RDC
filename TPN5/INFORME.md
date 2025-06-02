@@ -106,7 +106,11 @@ Los argumentos son los mismos que sus contrapartes en TCP
 3) HACER: Comparar un paquete UDP y un paquete TCP capturados, mostrar las diferencias y elaborar una tabla comparativa para las métricas obtenidas en el punto C.
 
 4) Sobre encriptación:
-   a) HACER: Investigar y desarrollar brevemente las diferencias entre encriptado simétrico y asimétrico.
+   a) Investigar y desarrollar brevemente las diferencias entre encriptado simétrico y asimétrico.
+   
+   **Encriptado simétrico** - Consiste en utilizar una única clave privada tanto en el transmisor para encriptar el mensaje como en el receptor para desencriptarlo. Es un método más fácil y rápido pero presenta la complicación de compartir la clave con la otra parte de forma segura.
+   
+   **Encriptado asimétrico** - Se utilizan 2 claves, una pública que se comparte con el transmisor para que encripte sus mensajes y otra privada que se mantiene protegida en el receptor. La clave privada se compara con la pública para verificar su valides y se utiliza para desencriptar el mensaje si se determina que la clave pública utilizada es válida. Es un proceso más lento y complejo pero más seguro.
    
    b) HACER: Investigar sobre librerías para encriptar mensajes, e implementar la que más te guste en los scripts que desarrollaste (encriptar la carga útil), podés usar cualquier tipo de encriptación que quieras: sobre la que elegiste, resumí las principales características.
    
