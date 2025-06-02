@@ -112,11 +112,17 @@ Los argumentos son los mismos que sus contrapartes en TCP
    
    **Encriptado asimétrico** - Se utilizan 2 claves, una pública que se comparte con el transmisor para que encripte sus mensajes y otra privada que se mantiene protegida en el receptor. La clave privada se compara con la pública para verificar su valides y se utiliza para desencriptar el mensaje si se determina que la clave pública utilizada es válida. Es un proceso más lento y complejo pero más seguro.
    
-   b) HACER: Investigar sobre librerías para encriptar mensajes, e implementar la que más te guste en los scripts que desarrollaste (encriptar la carga útil), podés usar cualquier tipo de encriptación que quieras: sobre la que elegiste, resumí las principales características.
+   b) Investigar sobre librerías para encriptar mensajes, e implementar la que más te guste en los scripts que desarrollaste (encriptar la carga útil), podés usar cualquier tipo de encriptación que quieras: sobre la que elegiste, resumí las principales características.
+   
+   Para este punto se utilizó la librería `sodium` que otorga múltiples métodos de encriptación. De todos los métodos de encriptación se utilizó el más simple, **xSalsa20**.
+   
+   xSalsa20 es un cifrado *simétrico* en el cual se produce una clave secreta de 32 bytes conocida por el cliente y el servidor. Luego el cliente genera un valor aleatorio de 24 bytes llamado *nonce* (number used once) que se utiliza junto a la clave para cifrar el mensaje entes de transmitirlo, luego el servidor recibe el nonce y lo combina con la clave para descifrar el mensaje. El nonce es una medida de seguridad ya que si solo se utiliza la clave privada un observador podría reconocer patrones en los mensajes y descifrar cuál es la clave privada, pero como a la clave se le agrega un nonce aleatorio para cada mensaje el observador no podrá detectar ningún patrón (siempre y cuando no se reutilice un nonce).
+   
+   Además de esto la librería genera un código de autenticación de mensaje (MAC) con la función hash `Poly1305`, que genera una etiqueta de 16 bytes para autenticar el mensaje. El algoritmo funciona con una clave de un solo uso de 32 bits, que en este caso se obtiene a partir del mismo nonce y el mensaje cifrado, de modo que al cambiar el nonce no solo cambia la clave que utiliza xSalsa20, sino que también cambia el hash de Poly1305.
    
    c) HACER: Ejecutar los scripts, tomar un paquete aleatorio de la secuencia e identificar la carga útil del mismo. Mostrar que la misma se encuentra encriptada, comparando con las tramas obtenidas en los ítems 1)a) y 2)a)
 
-   d) HACER: ¿Cómo harías para encriptar la comunicación entre las dos computadoras si las mismas se encuentran a  kilómetros de distancia y nunca intercambiaron información en el pasado? Explicar conceptualmente cómo implementarías esto en tus scripts (pero no hace falta que lo programes).
+   d) HACER: ¿Cómo harías para encriptar la comunicación entre las dos computadoras si las mismas se encuentran a kilómetros de distancia y nunca intercambiaron información en el pasado? Explicar conceptualmente cómo implementarías esto en tus scripts (pero no hace falta que lo programes).
 
 
 ## Resultados
