@@ -7,6 +7,7 @@ if(USE_UDP)
     )
 
     add_executable(${PROJECT_NAME} server-udp.cpp)
+    target_link_libraries(${PROJECT_NAME} PRIVATE sodium)
 else()
     project(
             server-tcp
@@ -14,4 +15,5 @@ else()
     )
 
     add_executable(${PROJECT_NAME} server-tcp.cpp)
+    target_link_libraries(${PROJECT_NAME} PRIVATE sodium)
 endif()

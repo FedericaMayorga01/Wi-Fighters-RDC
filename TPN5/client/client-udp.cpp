@@ -10,9 +10,23 @@
 #include <strings.h>
 #include <csignal>
 #include <vector>
+#include <sodium.h>
+#include <fstream>
 
 /// Socket file descriptor to communicate whit the server
 int sock_fd = -1;
+
+/**
+ * @param filename path to the key file
+ * @param key char array to store the key
+ */
+bool load_key(const std::string& filename, unsigned char key[crypto_secretbox_KEYBYTES])
+{
+    std::ifstream file(filename, std::ios::binary);
+    if (!file) return false;
+    file.read(reinterpret_cast<char*>(key), crypto_secretbox_KEYBYTES);
+    return file.gcount() == crypto_secretbox_KEYBYTES;
+}
 
 /**
  * signal handler used to force program exit
@@ -38,6 +52,21 @@ int main(const int argc, char *argv[])
 		std::cerr << "Usage: " << argv[0] << " <host> <port> <iterations> <delta time ms>" << std::endl;
 		return EXIT_FAILURE;
 	}
+
+    // Initialize sodium (for encryption)
+    if (sodium_init() == -1) 
+    {
+        std::cerr << "Failed to initialize libsodium" << std::endl;
+        return EXIT_FAILURE;
+    }
+
+    // Retrieve key for encryption
+    unsigned char key[crypto_secretbox_KEYBYTES];
+    if (!load_key("../key.txt", key)) 
+    {
+        std::cerr << "Failed to load encryption key" << std::endl;
+        return EXIT_FAILURE;
+    }
 
 	// Setup signal handlers
 	signal(SIGINT, sig_handler);
@@ -71,7 +100,26 @@ int main(const int argc, char *argv[])
 	{
 		// First send a message (WI_Fighters-i)
 		msg = preamble + std::to_string(i);
-		if (sendto(sock_fd, msg.data(), msg.size(), 0, res->ai_addr, res->ai_addrlen) < 0)
+        std::vector<unsigned char> bytes(msg.begin(), msg.end());
+
+        // Generate encryption one time key
+        unsigned char nonce[crypto_secretbox_NONCEBYTES];
+        randombytes_buf(nonce, sizeof nonce);
+        
+        // Encrypt message
+        std::vector<unsigned char> ciphertext(bytes.size() + crypto_secretbox_MACBYTES);
+        crypto_secretbox_easy(ciphertext.data(), bytes.data(), bytes.size(), nonce, key);
+
+		if (sendto(sock_fd, nonce, sizeof(nonce), 0, res->ai_addr, res->ai_addrlen) < 0)
+		{
+			if (sock_fd != -1)
+				close(sock_fd);
+			freeaddrinfo(res);
+			std::cerr << "Failed to write to server" << std::endl;
+			return EXIT_FAILURE;
+		}
+
+        if (sendto(sock_fd, ciphertext.data(), ciphertext.size(), 0, res->ai_addr, res->ai_addrlen) < 0)
 		{
 			if (sock_fd != -1)
 				close(sock_fd);
@@ -100,8 +148,15 @@ int main(const int argc, char *argv[])
 	if (sock_fd != -1)
 	{
 		// Send the "quit" message to the server before exiting
+        unsigned char nonce[crypto_secretbox_NONCEBYTES];
+        randombytes_buf(nonce, sizeof nonce);
+        sendto(sock_fd, nonce, sizeof(nonce), 0, res->ai_addr, res->ai_addrlen);
+
 		msg = "quit";
-		sendto(sock_fd, msg.data(), msg.size(), 0, res->ai_addr, res->ai_addrlen);
+        std::vector<unsigned char> bytes(msg.begin(), msg.end());
+        std::vector<unsigned char> ciphertext(bytes.size() + crypto_secretbox_MACBYTES);
+        crypto_secretbox_easy(ciphertext.data(), bytes.data(), bytes.size(), nonce, key);
+		sendto(sock_fd, ciphertext.data(), ciphertext.size(), 0, res->ai_addr, res->ai_addrlen);
 		close(sock_fd);
 	}
 	freeaddrinfo(res);

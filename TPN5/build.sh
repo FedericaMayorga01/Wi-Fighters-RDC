@@ -8,5 +8,8 @@ cmake .. -DIS_SERVER=0 -DUSE_UDP=0
 make
 cmake .. -DIS_SERVER=0 -DUSE_UDP=1
 make
+
+head -c 32 /dev/urandom | base64 > key.txt
+
 cd ..
 
