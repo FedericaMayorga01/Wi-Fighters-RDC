@@ -36,12 +36,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 1) Desarrollar scripts para enviar y recibir secuencialmente y a intervalos de tiempo configurables paquetes TCP con contenido identificatorio único (puede ser el nombre del grupo más un número incremental). En general se utiliza un script “server” y un script “cliente”. Podés usar el lenguaje de programación que prefieras (librerías net, socket son buenos lugares para empezar).
 
-Tanto el programa cliente como servidor se realizaron con c++, los archivos fuente se pueden encontrar en los directorios *client* y *server* respectivamente. Para compilar se puede utilizar el script que viene incluido en este mismo directorio *build.sh*, tener en cuenta que el mismo espera que ya tengamos instalado cmake y make.
+Tanto el programa cliente como servidor se realizaron con C++, los archivos fuente se pueden encontrar en los directorios *client* y *server* respectivamente. Para compilar se puede utilizar el script que viene incluido en este mismo directorio *build.sh*, tener en cuenta que el mismo espera que ya tengamos instalado cmake y make.
 
 Una vez compilados, los ejecutables se encontrarán en una nueva carpeta *build*, para ejecutar el servidor se debe usar:
 
 ```bash
-./build/server/server-tcp <puerto>
+cd build/server/
+./server-tcp <puerto>
 ```
 
 Indicando el puerto que usará el servidor.
@@ -49,7 +50,8 @@ Indicando el puerto que usará el servidor.
 Para ejecutar el cliente se debe usar:
 
 ```bash
-./build/client/client-tcp <host> <puerto> <iteraciones> <ms>
+cd build/client/
+./client-tcp <host> <puerto> <iteraciones> <ms>
 ```
 
 Donde:
@@ -59,22 +61,34 @@ Donde:
 	- **ms**: milisegundos entre mensajes que envía el cliente.
 
    a) Al probar los scripts y capturar el trafico observamos lo siguiente
-   Del lado del servidor podemos observar que el recibe le mensaje que el cliente le envia:
-   <p><img src="./img/Servidor_recibe.png"><br></p>
-   Ahora observamos la manera en la que el cliente envia el mensaje:
-   <p><img src="./img/terminal_envio.png"><br></p>
-   Capturando el paquete con wireshark lo observamos de la siguiente manera:
-   <p><img src="./img/wire_transit.png"><br></p>
+   Del lado del servidor podemos observar que el recibe le mensaje que el cliente le envía:
+   <p><img src="./img/TPN5_Server_TCP.png"><br></p>
+   
+   El cliente por su parte recibe mensajes de confirmación:
+   
+   <p><img src="./img/TPN5_Client_TCP.png"><br></p>
+   
+   Capturando el paquete con Wireshark lo observamos de la siguiente manera:
+   
+   <p><img src="./img/TPN5_Wireshark_TCP.png"><br></p>
+
+   La carga útil del paquete seleccionado consta de los últimos 13 bytes de los 99 bytes totales. Podemos deducir esto considerando que tenemos 14 bytes de la cabecera Ethernet 2, MAC origen + MAC destino + 2 bytes indicando el tipo de protocolo de red (IPv6); luego hay 40 bytes del protocolo IPv6 y 32 de TCP, dejando solo los 13 bytes finales de carga útil (99 - 14 - 40 - 32 = 13).
+   
+   <p><img src="./img/TPN5_TCP_Carga_Util.png"><br></p>
 
    b) A continuacion presentamos imagenes del log guardando registro de los mensajes
    Log creado:
    <p><img src="./img/log1.png"><br></p>
+   
    Revision del log:
-   <p><img src="./img/log2.png"><br></p>
+   
+   <p><img src="./img/TPN5_TCP_Log.png"><br></p>
 
-   c) Enviamos 100 mensajes de "hola" mediante un script de la terminal, y realizamos los calculos con un script de python. 
-   A raiz de esto podemos observar los siguientes resultados:
-   <p><img src="./img/Calculo_Latencia.png"><br></p>
+   c) Se agregó un código al final del programa cliente para calcular latencia y jitter. Enviando 100 paquetes en periodos de 1 segundo se obtuvo:
+   
+   <p><img src="./img/TPN5_TCP_RTT.png"><br></p>
+
+   Nótese que la latencia de recepción es en promedio mayor, esto es por el tiempo extra que le toma al servidor actualizar el log.
 
 2) Desarrollar un script análogo al punto anterior, pero para protocolo UDP. Repetir los ítems a), b) y c).
 
