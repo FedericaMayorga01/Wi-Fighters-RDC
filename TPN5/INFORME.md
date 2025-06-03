@@ -157,7 +157,21 @@ Los argumentos son los mismos que sus contrapartes en TCP
    
    Además de esto la librería genera un código de autenticación de mensaje (MAC) con la función hash `Poly1305`, que genera una etiqueta de 16 bytes para autenticar el mensaje. El algoritmo funciona con una clave de un solo uso de 32 bits, que en este caso se obtiene a partir del mismo nonce y el mensaje cifrado, de modo que al cambiar el nonce no solo cambia la clave que utiliza xSalsa20, sino que también cambia el hash de Poly1305.
    
-   c) HACER: Ejecutar los scripts, tomar un paquete aleatorio de la secuencia e identificar la carga útil del mismo. Mostrar que la misma se encuentra encriptada, comparando con las tramas obtenidas en los ítems 1)a) y 2)a)
+   c) Ejecutar los scripts, tomar un paquete aleatorio de la secuencia e identificar la carga útil del mismo. Mostrar que la misma se encuentra encriptada, comparando con las tramas obtenidas en los ítems 1)a) y 2)a)
+   
+   Repetimos el proceso original con los programas `client-tcp-e` y `server-tcp-e` que realizan la encriptación y decodificación de los mensajes
+   
+   <p><img src="./img/TPN5_Server_TCP_Encrypted.png"><br></p>
+   
+   Capturando los paquetes en Wireshark se observa:
+   
+   <p><img src="./img/TPN5_TCP_Wireshark_Encrypted.png"><br></p>
+   
+   Como primer detalle, ahora se observan más paquetes, estos son los paquetes donde el cliente envía la clave *nonce*. Revisando específicamente uno de los paquetes donde de envía un mensaje se observa:
+   
+   <p><img src="./img/TPN5_TCP_Carga_Util_Encrypted.png"><br></p>
+   
+   Donde la carga útil paso de los 13 bytes previos a 29 bytes y la traducción a ASCII que Wireshark intenta hacer no muestra el mensaje esperado, sino un conjunto de datos ilegibles, demostrando así que los datos se encuentran realmente encriptados y protegidos.
 
    d) HACER: ¿Cómo harías para encriptar la comunicación entre las dos computadoras si las mismas se encuentran a kilómetros de distancia y nunca intercambiaron información en el pasado? Explicar conceptualmente cómo implementarías esto en tus scripts (pero no hace falta que lo programes).
 
