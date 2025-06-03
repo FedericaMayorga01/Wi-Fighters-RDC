@@ -98,7 +98,7 @@ int main(const int argc, char *argv[])
 	sockaddr_in6 addr{};
 	addr.sin6_family = AF_INET6;
 	addr.sin6_port = htons(std::stoi(argv[1]));
-	inet_pton(AF_INET6, "fd00:1", &addr.sin6_addr);
+    addr.sin6_addr = in6addr_any;
 	if (bind(sock_fd, reinterpret_cast<sockaddr *>(&addr), sizeof(addr)) < 0)
 	{
 		if (sock_fd != -1)

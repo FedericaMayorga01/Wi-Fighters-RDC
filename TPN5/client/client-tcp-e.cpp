@@ -92,12 +92,6 @@ int main(const int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-    sockaddr_in6 src_addr{};
-    src_addr.sin6_family = AF_INET6;
-    src_addr.sin6_port = 0; // Puerto dinámico
-    inet_pton(AF_INET6, "fd00::2", &src_addr.sin6_addr);
-    bind(sock_fd, (sockaddr*)&src_addr, sizeof(src_addr));
-
 	// Connect to server
 	if (connect(sock_fd, res->ai_addr, res->ai_addrlen) < 0)
 	{
