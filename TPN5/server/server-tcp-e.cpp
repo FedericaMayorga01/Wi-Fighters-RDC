@@ -12,6 +12,7 @@
 #include <chrono>
 #include <iomanip>
 #include <ctime>
+#include <sodium.h>
 
 int sock_fd = -1;
 
@@ -24,6 +25,17 @@ std::string current_timestamp()
 	std::ostringstream oss;
 	oss << std::put_time(&tm, "%Y-%m-%d %H:%M:%S");
 	return oss.str();
+}
+
+/**
+ * @param filename path to the key file
+ * @param key char array to store the key
+ */
+bool load_key(const std::string& filename, unsigned char key[crypto_secretbox_KEYBYTES]) {
+    std::ifstream file(filename, std::ios::binary);
+    if (!file) return false;
+    file.read(reinterpret_cast<char*>(key), crypto_secretbox_KEYBYTES);
+    return file.gcount() == crypto_secretbox_KEYBYTES;
 }
 
 void sig_handler(int signum)
@@ -42,6 +54,19 @@ int main(const int argc, char *argv[])
 		std::cerr << "Usage: " << argv[0] << " <port>" << std::endl;
 		return EXIT_FAILURE;
 	}
+
+    if (sodium_init() == -1) 
+    {
+        std::cerr << "Failed to initialize libsodium" << std::endl;
+        return EXIT_FAILURE;
+    }
+
+    unsigned char key[crypto_secretbox_KEYBYTES];
+    if (!load_key("../key.txt", key)) 
+    {
+        std::cerr << "Failed to load encryption key" << std::endl;
+        return EXIT_FAILURE;
+    }
 
 	signal(SIGINT, sig_handler);
 	signal(SIGTERM, sig_handler);
@@ -104,16 +129,29 @@ int main(const int argc, char *argv[])
 	std::string msg{};
 	while (true)
 	{
+		std::vector<unsigned char> nonce(crypto_secretbox_NONCEBYTES);
 		std::vector<unsigned char> buffer(1024);
-
-        ssize_t bytes_read = read(client_fd, buffer.data(), 1024);
+		ssize_t bytes_read = read(client_fd, nonce.data(), nonce.size());
 		if (bytes_read <= 0)
 		{
 			std::cerr << "Failed to read from client" << std::endl;
 			break;
 		}
 
-		msg = std::string(buffer.begin(), buffer.begin() + bytes_read);
+        bytes_read = read(client_fd, buffer.data(), 1024);
+		if (bytes_read <= 0)
+		{
+			std::cerr << "Failed to read from client" << std::endl;
+			break;
+		}
+
+        std::vector<unsigned char> decrypted(bytes_read - crypto_secretbox_MACBYTES);    
+        if (crypto_secretbox_open_easy(decrypted.data(), buffer.data(), bytes_read, nonce.data(), key) != 0) {
+            std::cerr << "Decription failed" << std::endl;
+            break;
+        }
+
+		msg = std::string(decrypted.begin(), decrypted.end());
 
 		log_file << "[" << current_timestamp() << "] Received: " << msg << std::endl;
 		std::cout << "CLIENT: " << msg << std::endl;
@@ -142,3 +180,4 @@ int main(const int argc, char *argv[])
 	std::cout << "Closing server" << std::endl;
 	return EXIT_SUCCESS;
 }
+

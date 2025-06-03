@@ -6,11 +6,5 @@ pkg_check_modules(SODIUM REQUIRED libsodium)
 include_directories(${SODIUM_INCLUDE_DIRS})
 link_directories(${SODIUM_LIBRARY_DIRS})
 
-option(IS_SERVER 1)
-option(USE_UDP 0)
-
-if(IS_SERVER)
-    add_subdirectory(server)
-else()
-    add_subdirectory(client)
-endif ()
+add_subdirectory(server)
+add_subdirectory(client)

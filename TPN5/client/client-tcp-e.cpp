@@ -12,6 +12,7 @@
 #include <csignal>
 #include <vector>
 #include <chrono>
+#include <sodium.h>
 #include <fstream>
 
 /// Socket file descriptor to communicate whit the server
@@ -30,6 +31,18 @@ void sig_handler(int signum)
 }
 
 /**
+ * @param filename path to the key file
+ * @param key char array to store the key
+ */
+bool load_key(const std::string& filename, unsigned char key[crypto_secretbox_KEYBYTES])
+{
+    std::ifstream file(filename, std::ios::binary);
+    if (!file) return false;
+    file.read(reinterpret_cast<char*>(key), crypto_secretbox_KEYBYTES);
+    return file.gcount() == crypto_secretbox_KEYBYTES;
+}
+
+/**
  * @param argc number of arguments
  * @param argv client <host ipv6> <port> <n° of iterations> <ms between messages>
  */
@@ -41,6 +54,21 @@ int main(const int argc, char *argv[])
 		std::cerr << "Usage: " << argv[0] << " <host> <port> <iterations> <delta time ms>" << std::endl;
 		return EXIT_FAILURE;
 	}
+
+    // Initialize sodium (for encryption)
+    if (sodium_init() == -1) 
+    {
+        std::cerr << "Failed to initialize libsodium" << std::endl;
+        return EXIT_FAILURE;
+    }
+
+    // Retrieve key for encryption
+    unsigned char key[crypto_secretbox_KEYBYTES];
+    if (!load_key("../key.txt", key)) 
+    {
+        std::cerr << "Failed to load encryption key" << std::endl;
+        return EXIT_FAILURE;
+    }
 
 	// Setup signal handlers
 	signal(SIGINT, sig_handler);
@@ -93,14 +121,20 @@ int main(const int argc, char *argv[])
 	// Begin communications
 	for (auto i = 0; i < iterations; ++i)
 	{
-		auto start_time = std::chrono::high_resolution_clock::now();
-
 		// First send a message (WI_Fighters-i)
 		msg = preamble + std::to_string(i);
         std::vector<unsigned char> bytes(msg.begin(), msg.end());
 
-        // Send message
-		if (write(sock_fd, bytes.data(), bytes.size()) < 0)
+        // Generate encryption one time key
+        unsigned char nonce[crypto_secretbox_NONCEBYTES];
+        randombytes_buf(nonce, sizeof nonce);
+
+        // Encrypt message
+        std::vector<unsigned char> ciphertext(bytes.size() + crypto_secretbox_MACBYTES);
+        crypto_secretbox_easy(ciphertext.data(), bytes.data(), bytes.size(), nonce, key);
+
+        // Send encription nonce
+        if (write(sock_fd, nonce, sizeof(nonce)) < 0)
 		{
 			if (sock_fd != -1)
 				close(sock_fd);
@@ -108,7 +142,17 @@ int main(const int argc, char *argv[])
 			std::cerr << "Failed to write to server" << std::endl;
 			return EXIT_FAILURE;
 		}
+		auto start_time = std::chrono::high_resolution_clock::now();
 
+        // Send encripted message
+		if (write(sock_fd, ciphertext.data(), ciphertext.size()) < 0)
+		{
+			if (sock_fd != -1)
+				close(sock_fd);
+			freeaddrinfo(res);
+			std::cerr << "Failed to write to server" << std::endl;
+			return EXIT_FAILURE;
+		}
         auto send_time = std::chrono::high_resolution_clock::now();
 
 		// Then receive a successful response
@@ -123,10 +167,10 @@ int main(const int argc, char *argv[])
 			return EXIT_FAILURE;
 		}
 
-		auto end_time = std::chrono::high_resolution_clock::now(); // Marca tiempo después de recibir
+		auto end_time = std::chrono::high_resolution_clock::now();
 		rtt.push_back(std::chrono::duration<double, std::milli>(end_time - start_time).count());
-        send_latency.push_back(std::chrono::duration<double, std::milli>(send_time - start_time).count());
-        receive_latency.push_back(std::chrono::duration<double, std::milli>(end_time - send_time).count());
+		send_latency.push_back(std::chrono::duration<double, std::milli>(send_time - start_time).count());
+		receive_latency.push_back(std::chrono::duration<double, std::milli>(end_time - send_time).count());
 
 		std::cout << "SERVER: " << buffer.data() << std::endl;
 
@@ -136,10 +180,16 @@ int main(const int argc, char *argv[])
 
 	if (sock_fd != -1)
 	{
+		// Send the "quit" message to the server before exiting
+        unsigned char nonce[crypto_secretbox_NONCEBYTES];
+        randombytes_buf(nonce, sizeof nonce);
+        write(sock_fd, nonce, sizeof(nonce));
 
 		msg = "quit";
         std::vector<unsigned char> bytes(msg.begin(), msg.end());
-		write(sock_fd, bytes.data(), bytes.size());
+        std::vector<unsigned char> ciphertext(bytes.size() + crypto_secretbox_MACBYTES);
+        crypto_secretbox_easy(ciphertext.data(), bytes.data(), bytes.size(), nonce, key);
+		write(sock_fd, ciphertext.data(), ciphertext.size());
 		close(sock_fd);
 	}
 	freeaddrinfo(res);
@@ -179,3 +229,4 @@ int main(const int argc, char *argv[])
 
 	return EXIT_SUCCESS;
 }
+
