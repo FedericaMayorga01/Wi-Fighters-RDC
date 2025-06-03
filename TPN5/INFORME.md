@@ -95,27 +95,36 @@ Donde:
 Los archivos fuente para el cliente y servidor en UDP también se encuentran en las mismas carpetas *client* y *server* y se compilan al ejecutar el mismo script *build.sh* para ejecutar el servidor se usa:
 
 ```bash
-./build/server/server-udp <puerto>
+cd build/server/
+./server-udp <puerto>
 ```
 
 Y para el cliente:
 
 ```bash
-./build/client/client-udp <host> <puerto> <iteraciones> <ms>
+cd build/client/
+./client-udp <host> <puerto> <iteraciones> <ms>
 ```
 
 Los argumentos son los mismos que sus contrapartes en TCP
 
-
-   a) Al probar los scripts y capturar el trafico con Wireshark observamos lo siguiente 
-   <p><img src="./img/wire_udp.png"><br></p>
+   a) Al probar los scripts y capturar el trafico con Wireshark observamos lo siguiente:
+   
+   <p><img src="./img/TPN5_UDP_Wireshark.png"><br></p>
+   
+   La carga útil del paquete es nuevamente de 13 bytes (por ser el mismo mensaje) pero el paquete se redujo de 99 bytes a 75 bytes, ya que la cabecera UDP solo contiene 8 bytes en lugar de las 32 bytes de la de TCP.
+   
+   <p><img src="./img/TPN5_UDP_Carga_Util.png"><br></p>
 
    b) De la misma manera que para TCP, creamos un log "server_udp.log".
+   
+   <p><img src="./img/TPN5_UDP_Log.png"><br></p>
 
-   c) Enviamos 100 mensajes de "hola" mediante un script de la terminal, y realizamos los calculos con un script de python. 
-   A raiz de esto podemos observar los siguientes resultados:
-   <p><img src="./img/Calculo_Latencia_UDP.png"><br></p>
+   c) Enviamos 100 mensajes a periodos de 1 segundo. A raíz de esto podemos observar los siguientes resultados:
+   
+   <p><img src="./img/TPN5_UDP_RTT.png"><br></p>
 
+   Se observan valores mayores a TCP, el RTT mayor puede deberse a alguna perdida en el propio código.
 
 3) HACER: Comparar un paquete UDP y un paquete TCP capturados, mostrar las diferencias y elaborar una tabla comparativa para las métricas obtenidas en el punto C.
 

@@ -110,7 +110,7 @@ int main(const int argc, char* argv[])
 			return EXIT_FAILURE;
 		}
 
-		msg = std::string(buffer.begin(), buffer.end());
+		msg = std::string(buffer.begin(), buffer.begin() + bytes_read);
 
 		log_file << "[" << current_timestamp() << "] Received: " << msg << std::endl;
 		std::cout << "CLIENT: " << msg << std::endl;

@@ -224,7 +224,7 @@ int main(const int argc, char *argv[])
 		std::cout << "Latencia de recepción promedio: " << sum_recv / receive_latency.size() << " ms" << std::endl;
 		std::cout << "Latencia de recepción máxima: " << max_recv << " ms" << std::endl;
 		std::cout << "Latencia de recepción mínima: " << min_recv << " ms" << std::endl;
-		std::cout << "Jitter: " << jitter << " ms\n";
+		std::cout << "Jitter: " << jitter << " ms" << std::endl;
 	}
 
 	return EXIT_SUCCESS;

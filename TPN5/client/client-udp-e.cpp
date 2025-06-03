@@ -2,6 +2,7 @@
  * Main file for UDP client app
  */
 
+#include <chrono>
 #include <netinet/in.h>
 #include <iostream>
 #include <unistd.h>
@@ -94,6 +95,9 @@ int main(const int argc, char *argv[])
 	const auto sleep_ms = std::stoi(argv[4]);
 	const std::string preamble = "WI-Fighters-";
 	std::string msg{};
+	std::vector<double> rtt;
+	std::vector<double> send_latency;
+	std::vector<double> receive_latency;
 
 	// Begin communications
 	for (auto i = 0; i < iterations; ++i)
@@ -118,6 +122,7 @@ int main(const int argc, char *argv[])
 			std::cerr << "Failed to write to server" << std::endl;
 			return EXIT_FAILURE;
 		}
+		auto start_time = std::chrono::high_resolution_clock::now();
 
         if (sendto(sock_fd, ciphertext.data(), ciphertext.size(), 0, res->ai_addr, res->ai_addrlen) < 0)
 		{
@@ -127,6 +132,7 @@ int main(const int argc, char *argv[])
 			std::cerr << "Failed to write to server" << std::endl;
 			return EXIT_FAILURE;
 		}
+        auto send_time = std::chrono::high_resolution_clock::now();
 
 		// Then receive a successful response
 		std::vector<char> buffer(1024);
@@ -140,6 +146,11 @@ int main(const int argc, char *argv[])
 			return EXIT_FAILURE;
 		}
 		std::cout << "SERVER: " << buffer.data() << std::endl;
+
+		auto end_time = std::chrono::high_resolution_clock::now();
+		rtt.push_back(std::chrono::duration<double, std::milli>(end_time - start_time).count());
+		send_latency.push_back(std::chrono::duration<double, std::milli>(send_time - start_time).count());
+		receive_latency.push_back(std::chrono::duration<double, std::milli>(end_time - send_time).count());
 
 		// Sleep
 		usleep(sleep_ms * 1000);
@@ -160,6 +171,38 @@ int main(const int argc, char *argv[])
 		close(sock_fd);
 	}
 	freeaddrinfo(res);
+
+	if (!rtt.empty()) {
+		double sum_rtt = 0, max_rtt = rtt[0], min_rtt = rtt[0];
+		double sum_send = 0, max_send = send_latency[0], min_send = send_latency[0];
+		double sum_recv = 0, max_recv = receive_latency[0], min_recv = receive_latency[0];
+
+		double jitter = 0;
+		for (size_t i = 0; i < rtt.size(); ++i) {
+			sum_rtt += rtt[i];
+			if (rtt[i] > max_rtt) max_rtt = rtt[i];
+			if (rtt[i] < min_rtt) min_rtt = rtt[i];
+			if (i > 0) jitter += std::abs(rtt[i] - rtt[i-1]);
+
+			sum_send += send_latency[i];
+			if (send_latency[i] > max_send) max_send = send_latency[i];
+			if (send_latency[i] < min_send) min_send = send_latency[i];
+
+			sum_recv += receive_latency[i];
+			if (receive_latency[i] > max_recv) max_recv = receive_latency[i];
+			if (receive_latency[i] < min_recv) min_recv = receive_latency[i];
+		}
+		jitter = jitter / (rtt.size() - 1);
+
+		std::cout << "RTT promedio: " << sum_rtt / rtt.size() << " ms" << std::endl;
+		std::cout << "Latencia de envío promedio: " << sum_send / send_latency.size() << " ms" << std::endl;
+		std::cout << "Latencia de envío máxima: " << max_send << " ms" << std::endl;
+		std::cout << "Latencia de envío mínima: " << min_send << " ms" << std::endl;
+		std::cout << "Latencia de recepción promedio: " << sum_recv / receive_latency.size() << " ms" << std::endl;
+		std::cout << "Latencia de recepción máxima: " << max_recv << " ms" << std::endl;
+		std::cout << "Latencia de recepción mínima: " << min_recv << " ms" << std::endl;
+		std::cout << "Jitter: " << jitter << " ms" << std::endl;
+	}
 
 	return EXIT_SUCCESS;
 }
