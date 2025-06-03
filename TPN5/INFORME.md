@@ -126,7 +126,21 @@ Los argumentos son los mismos que sus contrapartes en TCP
 
    Se observan valores mayores a TCP, el RTT mayor puede deberse a alguna perdida en el propio código.
 
-3) HACER: Comparar un paquete UDP y un paquete TCP capturados, mostrar las diferencias y elaborar una tabla comparativa para las métricas obtenidas en el punto C.
+3) Comparar un paquete UDP y un paquete TCP capturados, mostrar las diferencias y elaborar una tabla comparativa para las métricas obtenidas en el punto C.
+
+   Desglosando los paquetes presentados en los puntos 1.a y 2.a se tiene:
+   
+   | Protocolo | Tamaño paquete | Tamaño encabezados |
+   | --- | --- | --- |
+   | TCP | 99 Bytes | 14 Bytes Ethernet II, 40 Bytes IPv6, 32 Bytes TCP, 13 Bytes carga útil |
+   | UDP | 75 | 14 Bytes Ethernet II, 40 Bytes IPv6, 8 Bytes UDP, 13 Bytes carga útil |
+   
+   En cuanto a lo obtenido en el punto C se tiene:
+   
+   | Protocolo | RTT promedio | Latencia de envío promedio - Max - Min | Latencia de recepción promedio - Max - Min | Jitter |
+   | --- | --- | --- | --- | --- |
+   | TCP | 0.205 ms | 0.042 ms - 0.147 ms - 0.021 ms | 0.163 ms - 0.351 ms - 0.068 ms | 0.057 ms |
+   | UDP | 0.235 ms | 0.049 ms - 0.107 ms - 0.028 ms | 0.187 ms - 0.480 ms - 0.095 ms | 0.082 ms |
 
 4) Sobre encriptación:
    a) Investigar y desarrollar brevemente las diferencias entre encriptado simétrico y asimétrico.
